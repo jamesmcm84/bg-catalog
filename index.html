@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=0.5, maximum-scale=5.0">
+<title>BoardVault — Collection</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --gold: #F5A623; --gold-dk: #C47D0A;
+  --dark: #252527; --panel: #2E2E30; --border: #3A3A3E;
+  --text: #F0EAE0; --muted: #888; --red: #CC1A1A;
+}
+html, body { background: #3A3A3C; color: var(--text); font-family: 'Barlow', sans-serif; min-height: 100vh; }
+
+header {
+  background: var(--dark); border-bottom: 2px solid var(--gold);
+  padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.logo { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 3px; color: var(--gold); }
+.logo em { color: var(--text); font-style: normal; }
+.header-right { display: flex; align-items: center; gap: 16px; }
+.header-count { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+
+main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+.section-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 3px;
+  color: var(--gold); border-left: 4px solid var(--red); padding-left: 12px; margin-bottom: 1.5rem;
+}
+
+.filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.8rem; align-items: center; }
+.filter-btn {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 14px; border-radius: 20px;
+  border: 1.5px solid var(--border); background: transparent; color: var(--muted);
+  cursor: pointer; transition: all 0.15s;
+}
+.filter-btn:hover { border-color: var(--gold-dk); color: var(--text); }
+.filter-btn.active { background: var(--gold); border-color: var(--gold); color: #111; }
+.search-input {
+  background: var(--panel); border: 1px solid var(--border); color: var(--text);
+  font-family: 'Barlow', sans-serif; font-size: 0.88rem; padding: 6px 14px;
+  border-radius: 20px; outline: none; width: 210px; margin-left: auto;
+}
+.search-input:focus { border-color: var(--gold); }
+
+.games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+
+.game-card {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+  overflow: hidden; text-decoration: none; color: var(--text);
+  transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+  display: flex; flex-direction: column;
+}
+.game-card:hover { transform: translateY(-4px); border-color: var(--gold-dk); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+.card-header { display: flex; align-items: stretch; min-height: 130px; background: #1A1A1A; position: relative; }
+.card-cover { width: 110px; flex-shrink: 0; overflow: hidden; background: #222; }
+.card-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-cover-ph { width: 100%; height: 100%; min-height: 130px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+.card-title-block { flex: 1; padding: 0.8rem 1rem; display: flex; flex-direction: column; justify-content: space-between; }
+.card-badges { display: flex; gap: 5px; flex-wrap: wrap; }
+.badge { font-family: 'Barlow Condensed', sans-serif; font-size: 0.58rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; white-space: nowrap; }
+.badge-purple { background: #6A2FA0; color: #fff; }
+.badge-teal { background: #1A7A7A; color: #fff; }
+.badge-gold { background: var(--gold); color: #111; }
+.card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 1px; line-height: 1.1; color: #F4EFE5; margin: 4px 0; }
+.card-meta { display: flex; gap: 10px; flex-wrap: wrap; }
+.card-meta-item { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 600; color: #aaa; }
+.card-body { padding: 0.9rem 1rem; flex: 1; }
+.card-desc { font-size: 0.8rem; line-height: 1.55; color: #999; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.card-footer { padding: 0.7rem 1rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.card-complexity { display: flex; align-items: center; gap: 5px; }
+.cpip { display: inline-block; width: 9px; height: 9px; border-radius: 2px; background: #333; }
+.cpip.on { background: var(--red); }
+.card-rating { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--gold); line-height: 1; }
+.card-rating span { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; color: var(--muted); }
+.loc-badge { position: absolute; top: 8px; right: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.58rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; background: var(--red); color: #fff; padding: 2px 7px; border-radius: 3px; }
+
+/* loading */
+.loading-grid { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 5rem 0; color: var(--muted); }
+.spinner { width: 36px; height: 36px; border: 3px solid #333; border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; }
+
+.empty { text-align: center; padding: 5rem 2rem; color: #444; }
+.empty h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px; margin-bottom: 0.5rem; }
+
+@media (max-width: 600px) {
+  .games-grid { grid-template-columns: 1fr; }
+  .search-input { width: 100%; margin-left: 0; }
+  header { padding: 0.85rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div><div class="logo">Board<em>Vault</em></div></div>
+  <div class="header-right">
+    <div class="header-count" id="game-count"></div>
+  </div>
+</header>
+
+<main>
+  <div class="section-title">Our Collection</div>
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" data-filter="Family" onclick="setFilter('Family',this)">Family</button>
+    <button class="filter-btn" data-filter="Strategy" onclick="setFilter('Strategy',this)">Strategy</button>
+    <button class="filter-btn" data-filter="Party" onclick="setFilter('Party',this)">Party</button>
+    <button class="filter-btn" data-filter="Family/Strategy" onclick="setFilter('Family/Strategy',this)">Family/Strategy</button>
+    <button class="filter-btn" data-filter="Filler" onclick="setFilter('Filler',this)">Filler</button>
+    <input type="text" class="search-input" placeholder="🔍 Search…" oninput="filterGames(this.value)">
+  </div>
+  <div class="games-grid" id="games-grid">
+    <div class="loading-grid"><div class="spinner"></div><div class="loading-text">Loading collection…</div></div>
+  </div>
+</main>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbxWVpfpgVg2sbBH5PszE2hoNWL7ZBXh_TdIIBQFj-sJSL2cakGfgqBBHYIDElVwI5wr/exec';
+let allGames = [], currentFilter = 'all', searchQuery = '';
+
+async function loadGames() {
+  try {
+    const res = await fetch(API + '?action=getGames');
+    const data = await res.json();
+    allGames = Array.isArray(data) ? data : [];
+    renderGames();
+  } catch(e) {
+    document.getElementById('games-grid').innerHTML = '<div class="empty"><h2>Could not load</h2><p>Check your Apps Script is deployed and accessible.</p></div>';
+  }
+}
+
+function setFilter(val, btn) {
+  currentFilter = val;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === val));
+  renderGames();
+}
+function filterGames(q) { searchQuery = q.toLowerCase(); renderGames(); }
+
+function renderGames() {
+  const grid = document.getElementById('games-grid');
+  let filtered = allGames.filter(g => {
+    const matchFilter = currentFilter === 'all' || (g.GameType||'') === currentFilter;
+    const matchSearch = !searchQuery ||
+      (g.Title||'').toLowerCase().includes(searchQuery) ||
+      (g.Category||'').toLowerCase().includes(searchQuery) ||
+      (g.Style||'').toLowerCase().includes(searchQuery) ||
+      (g.Theme||'').toLowerCase().includes(searchQuery);
+    return matchFilter && matchSearch;
+  });
+
+  document.getElementById('game-count').textContent = allGames.length + ' Game' + (allGames.length !== 1 ? 's' : '');
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty"><h2>No Matches</h2><p>Try a different filter or search.</p></div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(g => {
+    const jR = parseFloat(g.JRating) || 0;
+    const aR = parseFloat(g.ARating) || 0;
+    const both = [jR, aR].filter(r => r > 0);
+    const overall = both.length ? (both.reduce((a,b) => a+b,0) / both.length) : 0;
+    const complexity = parseInt(g.Complexity) || 1;
+    const accent = g.AccentColor || '#CC1A1A';
+    const slug = g.Slug || slugify(g.Title||'game');
+    const pips = [1,2,3,4,5].map(n => `<span class="cpip ${n<=complexity?'on':''}" style="${n<=complexity?'background:'+accent:''}"></span>`).join('');
+
+    return `<a href="game.html?slug=${encodeURIComponent(slug)}" class="game-card">
+      <div class="card-header">
+        <div class="card-cover">
+          ${g.CoverURL ? `<img src="${g.CoverURL}" alt="${g.Title}" onerror="this.parentElement.innerHTML='<div class=\'card-cover-ph\'>🎲</div>'">` : '<div class="card-cover-ph">🎲</div>'}
+        </div>
+        <div class="card-title-block">
+          <div class="card-badges">
+            ${g.GameType ? `<span class="badge badge-purple">${g.GameType}</span>` : ''}
+            ${g.Style ? `<span class="badge badge-teal">${g.Style}</span>` : ''}
+            ${g.Category ? `<span class="badge badge-gold">${g.Category}</span>` : ''}
+          </div>
+          <div class="card-title">${g.Title||'Untitled'}</div>
+          <div class="card-meta">
+            ${g.Players ? `<span class="card-meta-item">👥 ${g.Players}</span>` : ''}
+            ${g.Time ? `<span class="card-meta-item">⏱ ${g.Time}</span>` : ''}
+            ${g.Age ? `<span class="card-meta-item">🎂 ${g.Age}+</span>` : ''}
+            ${g.Year ? `<span class="card-meta-item">${g.Year}</span>` : ''}
+          </div>
+        </div>
+        ${g.Location ? `<div class="loc-badge">${g.Location}</div>` : ''}
+      </div>
+      <div class="card-body"><div class="card-desc">${g.Description||''}</div></div>
+      <div class="card-footer">
+        <div class="card-complexity">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#666;margin-right:4px">Complexity</span>
+          ${pips}
+        </div>
+        <div class="card-rating">${overall>0?overall.toFixed(1):'—'} <span>/ 5</span></div>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+
+loadGames();
+</script>
+</body>
+</html>
