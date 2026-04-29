@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=0.5, maximum-scale=5.0">
+<title>BoardVault</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --gold: #F5A623; --gold-dk: #C47D0A; --red: #CC1A1A; }
+html, body { background: #3A3A3C; font-family: 'Barlow', sans-serif; min-height: 100vh; color: #F0EAE0; }
+
+header {
+  background: #252527; border-bottom: 2px solid var(--gold);
+  padding: 0.85rem 2rem; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 3px; color: var(--gold); }
+.logo em { color: #F0EAE0; font-style: normal; }
+.back { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #888; text-decoration: none; }
+.back:hover { color: var(--gold); }
+
+.page { max-width: 740px; margin: 0 auto; padding: 2rem 1rem 5rem; }
+
+/* loading */
+.loading { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 5rem 0; color: #666; }
+.spinner { width: 36px; height: 36px; border: 3px solid #333; border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; }
+
+/* ═══════ SHEET ═══════ */
+.sheet {
+  background: #F4EFE5; border-radius: 5px; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.55), 0 4px 16px rgba(0,0,0,0.3);
+  color: #1A1A1A;
+}
+
+/* topbar */
+.sh-topbar { background: #111; display: flex; align-items: stretch; min-height: 200px; }
+.sh-cover { width: 190px; flex-shrink: 0; overflow: hidden; background: #222; }
+.sh-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sh-cover-ph { width: 100%; height: 100%; min-height: 200px; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+.sh-title-block { flex: 1; padding: 0.9rem 1.1rem; display: flex; flex-direction: column; justify-content: space-between; }
+.sh-badges-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: space-between; }
+.sh-badge { font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; white-space: nowrap; }
+.sh-badge-gold { background: #F5A623; color: #111; }
+.sh-badge-teal { background: #1A7A7A; color: #fff; }
+.sh-badge-purple { background: #6A2FA0; color: #fff; }
+.sh-badge-red { background: var(--red); color: #fff; }
+.sh-title { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; letter-spacing: 1px; line-height: 1; color: #F4EFE5; display: block; padding: 6px 0 0; }
+.sh-meta-row { display: flex; align-items: center; justify-content: space-between; }
+.sh-meta { display: flex; gap: 14px; flex-wrap: wrap; }
+.sh-meta-item { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 600; color: #bbb; }
+.sh-year { font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 700; letter-spacing: 3px; color: #fff; }
+
+/* mid */
+.sh-mid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #D0CAB8; }
+.sh-desc { padding: 1.1rem 1.3rem; border-right: 1px solid #D0CAB8; }
+.sh-desc p { font-size: 0.86rem; line-height: 1.65; color: #333; }
+.sh-mech-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }
+.sh-tag { font-family: 'Barlow Condensed', sans-serif; font-size: 0.63rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; background: #E0D8CC; color: #555; border: 1px solid #CBC3B5; }
+.sh-photo { overflow: hidden; background: #DDD8CC; min-height: 130px; display: flex; align-items: center; justify-content: center; }
+.sh-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sh-photo-ph { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; color: #aaa; }
+
+/* bottom */
+.sh-bottom { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #D0CAB8; }
+.sh-info { padding: 1rem 1.3rem; border-right: 1px solid #D0CAB8; }
+.sh-info-row { display: flex; font-size: 0.8rem; line-height: 1.4; border-bottom: 1px dotted #D0CAB8; padding: 4px 0; gap: 5px; }
+.sh-info-row:last-child { border-bottom: none; }
+.sh-info-key { font-weight: 700; color: #333; min-width: 105px; flex-shrink: 0; }
+.sh-info-val { color: #555; }
+.cpip { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: #CCC; margin-right: 2px; }
+.cpip.on { background: var(--red); }
+
+/* ratings */
+.sh-ratings { padding: 1rem 1.3rem; display: flex; flex-direction: column; gap: 12px; }
+.sh-rating-person { display: flex; align-items: center; justify-content: space-between; }
+.sh-rating-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 2px; color: #555; min-width: 65px; }
+.sh-rating-stars { display: flex; gap: 3px; }
+.sstar { font-size: 20px; color: #F5A623; }
+.sstar.empty { color: #CCC; }
+.sh-rating-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; line-height: 1; color: #222; }
+.sh-rating-divider { border: none; border-top: 1px solid #D0CAB8; }
+.sh-overall { display: flex; align-items: center; justify-content: space-between; background: #1A1A1A; margin: -1rem -1.3rem -1rem; padding: 0.7rem 1.3rem; margin-top: 4px; }
+.sh-overall-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #888; }
+.sh-overall-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; line-height: 1; color: #F5A623; }
+.sh-overall-stars { display: flex; gap: 2px; margin-top: 2px; }
+
+/* links */
+.sh-links { background: #ECEAE0; padding: 0.7rem 1.3rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid #D0CAB8; }
+.sh-link { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; padding: 4px 12px; border-radius: 4px; border: 1.5px solid #bbb; color: #333; display: inline-flex; align-items: center; gap: 5px; background: #fff; transition: border-color 0.15s; }
+.sh-link:hover { border-color: #555; }
+.sh-link.bgg { background: #E8622A; border-color: #E8622A; color: #fff; }
+
+/* footer */
+.sh-footer { background: #1A1A1A; padding: 0.6rem 1.3rem; }
+.sh-designer { font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; letter-spacing: 1px; color: #666; }
+
+/* expansions */
+.sh-exp-header { background: #1A1A1A; padding: 0.6rem 1.3rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: #F4EFE5; border-top: 2px solid #D0CAB8; }
+.sh-exp-item { display: grid; grid-template-columns: 90px 1fr; border-bottom: 1px solid #D0CAB8; }
+.sh-exp-item:last-child { border-bottom: none; }
+.sh-exp-cover { overflow: hidden; background: #DDD8CC; display: flex; align-items: center; justify-content: center; border-right: 1px solid #D0CAB8; min-height: 90px; }
+.sh-exp-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sh-exp-cover-ph { font-size: 1.8rem; color: #bbb; }
+.sh-exp-body { padding: 0.8rem 1rem; display: flex; flex-direction: column; gap: 5px; background: #F4EFE5; }
+.sh-exp-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1px; color: #1A1A1A; line-height: 1; }
+.sh-exp-desc { font-size: 0.78rem; line-height: 1.5; color: #555; }
+.sh-exp-links { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 3px; }
+.sh-exp-link { font-family: 'Barlow Condensed', sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; padding: 2px 8px; border-radius: 3px; border: 1px solid #C8C0B0; color: #555; background: #fff; }
+.sh-exp-link.bgg { background: #E8622A; border-color: #E8622A; color: #fff; }
+
+/* card sections */
+.card-section { background: #ECEAE0; border-top: 2px solid #D0CAB8; }
+.card-section-header { display: flex; align-items: center; gap: 8px; padding: 0.7rem 1.3rem; background: #1A1A1A; }
+.card-section-icon { font-size: 14px; }
+.card-section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: #F4EFE5; flex: 1; }
+.toggle-btn { background: none; border: none; color: #888; cursor: pointer; font-size: 12px; padding: 2px 6px; border-radius: 3px; }
+.toggle-btn:hover { color: var(--gold); }
+
+/* play log */
+.play-form { padding: 0.9rem 1.3rem; background: #F4EFE5; border-bottom: 1px solid #D0CAB8; display: flex; flex-direction: column; gap: 10px; }
+.play-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.pf { display: flex; flex-direction: column; gap: 3px; }
+.pf label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #888; }
+.pf input, .pf select { background: #fff; border: 1px solid #C8C0B0; color: #222; font-family: 'Barlow', sans-serif; font-size: 0.83rem; padding: 5px 8px; border-radius: 4px; outline: none; }
+.pf input[type=date] { width: 130px; }
+.pf input[type=text] { width: 80px; }
+.pf select { min-width: 130px; }
+.pchk { display: flex; gap: 10px; margin-top: 4px; }
+.pchk label { display: flex; align-items: center; gap: 4px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: #555; cursor: pointer; }
+.card-log-btn { background: #1A1A1A; color: #F4EFE5; font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; border: none; padding: 7px 16px; border-radius: 4px; cursor: pointer; transition: background 0.15s; }
+.card-log-btn:hover { background: #333; }
+.card-log-btn.saving { opacity: 0.6; cursor: default; }
+
+.play-history { padding: 0.8rem 1.3rem; background: #F4EFE5; display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; }
+.play-entry { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid #D8D0C4; border-radius: 5px; padding: 0.6rem 0.9rem; gap: 10px; }
+.pe-left { display: flex; flex-direction: column; gap: 2px; }
+.pe-date { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #999; }
+.pe-players { font-family: 'Barlow', sans-serif; font-size: 0.82rem; color: #333; }
+.pe-winner { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #8B6914; }
+.pe-scores { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; color: #888; }
+.no-plays { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: #bbb; text-align: center; padding: 1rem 0; }
+
+/* add expansion form */
+.exp-add-form { padding: 0.9rem 1.3rem; background: #F4EFE5; border-bottom: 1px solid #D0CAB8; display: flex; flex-direction: column; gap: 8px; }
+.exp-add-form input { background: #fff; border: 1px solid #C8C0B0; color: #222; font-family: 'Barlow', sans-serif; font-size: 0.83rem; padding: 5px 8px; border-radius: 4px; outline: none; width: 100%; }
+.exp-add-form textarea { background: #fff; border: 1px solid #C8C0B0; color: #222; font-family: 'Barlow', sans-serif; font-size: 0.83rem; padding: 5px 8px; border-radius: 4px; outline: none; width: 100%; resize: vertical; min-height: 56px; line-height: 1.4; }
+.exp-form-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #888; margin-bottom: -4px; }
+.exp-add-btn-row { padding: 0.7rem 1.3rem; background: #ECEAE0; border-top: 1px solid #D0CAB8; }
+
+/* chat */
+.chat-win { background: #F4EFE5; padding: 0.9rem 1.3rem; display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; border-bottom: 1px solid #D0CAB8; }
+.msg { display: flex; gap: 8px; align-items: flex-start; }
+.msg.user { flex-direction: row-reverse; }
+.av { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem; font-weight: 700; flex-shrink: 0; }
+.msg.user .av { background: #1A1A1A; color: #F4EFE5; }
+.msg.ai .av { background: #E0D8CC; color: #555; border: 1px solid #C8C0B0; }
+.bubble { max-width: 82%; padding: 7px 11px; border-radius: 8px; font-size: 0.83rem; line-height: 1.55; }
+.msg.user .bubble { background: #1A1A1A; color: #F4EFE5; border-radius: 8px 2px 8px 8px; }
+.msg.ai .bubble { background: #fff; color: #333; border-radius: 2px 8px 8px 8px; border: 1px solid #D8D0C4; }
+.msg.ai .bubble.loading { color: #aaa; font-style: italic; }
+.chat-input-row { display: flex; background: #F4EFE5; padding: 0.7rem 1.3rem; border-bottom: 1px solid #D0CAB8; }
+.chat-input-row input { flex: 1; background: #fff; border: 1px solid #C8C0B0; border-right: none; color: #222; font-family: 'Barlow', sans-serif; font-size: 0.85rem; padding: 8px 11px; border-radius: 4px 0 0 4px; outline: none; }
+.chat-send { background: #1A1A1A; color: #F4EFE5; font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; border: none; padding: 8px 16px; border-radius: 0 4px 4px 0; cursor: pointer; }
+.chat-send:hover { background: #333; }
+.chat-hint { background: #ECEAE0; padding: 0.4rem 1.3rem; font-family: 'Barlow Condensed', sans-serif; font-size: 0.62rem; letter-spacing: 1px; color: #aaa; }
+
+/* toast */
+.toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: #252527; color: #F0EAE0; font-family: 'Barlow Condensed', sans-serif; font-size: 0.88rem; letter-spacing: 1px; padding: 10px 16px; border-radius: 8px; border-left: 3px solid #4CAF77; opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; z-index: 999; }
+.toast.show { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 600px) {
+  .sh-mid { grid-template-columns: 1fr; }
+  .sh-bottom { grid-template-columns: 1fr; }
+  .sh-info { border-right: none; border-bottom: 1px solid #D0CAB8; }
+  .sh-title { font-size: 2.2rem !important; }
+  header { padding: 0.85rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Board<em>Vault</em></div>
+  <a href="index.html" class="back">← Collection</a>
+</header>
+
+<div class="page">
+  <div id="page-content">
+    <div class="loading"><div class="spinner"></div><div class="loading-text">Loading game…</div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbxWVpfpgVg2sbBH5PszE2hoNWL7ZBXh_TdIIBQFj-sJSL2cakGfgqBBHYIDElVwI5wr/exec';
+const params = new URLSearchParams(window.location.search);
+const SLUG = params.get('slug') || '';
+let GAME = null;
+
+// ── LOAD EVERYTHING ──
+async function init() {
+  try {
+    const [gamesRes, playsRes, expsRes] = await Promise.all([
+      fetch(API + '?action=getGames'),
+      fetch(API + '?action=getPlays&slug=' + encodeURIComponent(SLUG)),
+      fetch(API + '?action=getExpansions&slug=' + encodeURIComponent(SLUG))
+    ]);
+    const games = await gamesRes.json();
+    const plays = await playsRes.json();
+    const expansions = await expsRes.json();
+
+    GAME = (games||[]).find(g => (g.Slug||slugify(g.Title||'')) === SLUG);
+    if (!GAME) { document.getElementById('page-content').innerHTML = '<div style="text-align:center;padding:4rem;color:#666"><h2 style="font-family:\'Bebas Neue\',sans-serif;font-size:2rem;letter-spacing:3px">Game Not Found</h2><p style="margin-top:8px"><a href="index.html" style="color:#F5A623">← Back to Collection</a></p></div>'; return; }
+
+    document.title = GAME.Title + ' — BoardVault';
+    renderPage(GAME, plays||[], expansions||[]);
+  } catch(e) {
+    document.getElementById('page-content').innerHTML = '<div style="text-align:center;padding:4rem;color:#666">Could not load game data. Check your connection.</div>';
+  }
+}
+
+function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+function stars(r, sz) { return [1,2,3,4,5].map(n=>`<span class="sstar ${n<=Math.round(r)?'':'empty'}" style="font-size:${sz}px">★</span>`).join(''); }
+
+function renderPage(g, plays, expansions) {
+  const jR = parseFloat(g.JRating)||0, aR = parseFloat(g.ARating)||0;
+  const both = [jR,aR].filter(r=>r>0);
+  const overall = both.length ? both.reduce((a,b)=>a+b,0)/both.length : 0;
+  const complexity = parseInt(g.Complexity)||1;
+  const accent = g.AccentColor || '#CC1A1A';
+  const mechs = (g.Mechanisms||'').split(',').map(s=>s.trim()).filter(Boolean);
+
+  const badgesLeft = [
+    g.GameType ? `<span class="sh-badge sh-badge-purple">${g.GameType}</span>` : '',
+    g.Style ? `<span class="sh-badge sh-badge-teal">${g.Style}</span>` : '',
+    g.Category ? `<span class="sh-badge sh-badge-gold">${g.Category}</span>` : '',
+  ].filter(Boolean).join('');
+
+  const metaItems = [
+    g.Players ? `<span class="sh-meta-item">👥 ${g.Players}</span>` : '',
+    g.Time ? `<span class="sh-meta-item">⏱ ${g.Time}</span>` : '',
+    g.Age ? `<span class="sh-meta-item">🎂 Age ${g.Age}+</span>` : '',
+  ].filter(Boolean).join('');
+
+  const pipsHtml = [1,2,3,4,5].map(n=>`<span class="cpip ${n<=complexity?'on':''}" style="${n<=complexity?'background:'+accent:''}"></span>`).join('');
+
+  const infoRows = [
+    g.Theme ? `<div class="sh-info-row"><span class="sh-info-key">Theme</span><span class="sh-info-val">${g.Theme}</span></div>` : '',
+    `<div class="sh-info-row"><span class="sh-info-key">Complexity</span><span class="sh-info-val">${pipsHtml} <span style="font-size:0.78rem;color:#777">${complexity}/5</span></span></div>`,
+    g.Designer ? `<div class="sh-info-row"><span class="sh-info-key">Designer</span><span class="sh-info-val">${g.Designer}</span></div>` : '',
+    g.Publisher ? `<div class="sh-info-row"><span class="sh-info-key">Publisher</span><span class="sh-info-val">${g.Publisher}</span></div>` : '',
+  ].filter(Boolean).join('');
+
+  const linksHtml = [
+    g.VideoURL ? `<a class="sh-link" href="${g.VideoURL}" target="_blank">▶ How to Play</a>` : '',
+    g.RulebookURL ? `<a class="sh-link" href="${g.RulebookURL}" target="_blank">📄 Rulebook</a>` : '',
+    g.BGGURL ? `<a class="sh-link bgg" href="${g.BGGURL}" target="_blank">🎯 BGG</a>` : '',
+  ].filter(Boolean).join('');
+
+  const expansionsHtml = expansions.length ? `
+    <div class="sh-exp-header">📦 Expansions</div>
+    ${expansions.map(ex => `
+      <div class="sh-exp-item">
+        <div class="sh-exp-cover">
+          ${ex.CoverURL ? `<img src="${ex.CoverURL}" onerror="this.parentElement.innerHTML='<div class=\'sh-exp-cover-ph\'>📦</div>'">` : '<div class="sh-exp-cover-ph">📦</div>'}
+        </div>
+        <div class="sh-exp-body">
+          <div class="sh-exp-name">${ex.Name||''}</div>
+          ${ex.Description ? `<div class="sh-exp-desc">${ex.Description}</div>` : ''}
+          <div class="sh-exp-links">
+            ${ex.VideoURL ? `<a class="sh-exp-link" href="${ex.VideoURL}" target="_blank">▶ How to Play</a>` : ''}
+            ${ex.RulebookURL ? `<a class="sh-exp-link" href="${ex.RulebookURL}" target="_blank">📄 Rulebook</a>` : ''}
+            ${ex.BGGURL ? `<a class="sh-exp-link bgg" href="${ex.BGGURL}" target="_blank">🎯 BGG</a>` : ''}
+          </div>
+        </div>
+      </div>`).join('')}` : '';
+
+  document.getElementById('page-content').innerHTML = `
+  <div class="sheet">
+
+    <div class="sh-topbar">
+      <div class="sh-cover">
+        ${g.CoverURL ? `<img src="${g.CoverURL}" alt="${g.Title}" onerror="this.parentElement.innerHTML='<div class=\'sh-cover-ph\'>🎲</div>'">` : '<div class="sh-cover-ph">🎲</div>'}
+      </div>
+      <div class="sh-title-block">
+        <div class="sh-badges-row">
+          <div style="display:flex;gap:6px;flex-wrap:wrap">${badgesLeft}</div>
+          ${g.Location ? `<span class="sh-badge sh-badge-red">${g.Location}</span>` : ''}
+        </div>
+        <div class="sh-title" style="font-size:${(g.Title||'').length>22?'2rem':(g.Title||'').length>14?'2.6rem':'3.2rem'}">${g.Title||''}</div>
+        <div class="sh-meta-row">
+          <div class="sh-meta">${metaItems}</div>
+          ${g.Year ? `<div class="sh-year">${g.Year}</div>` : ''}
+        </div>
+      </div>
+    </div>
+
+    <div class="sh-mid">
+      <div class="sh-desc">
+        ${g.Description ? `<p>${g.Description}</p>` : ''}
+        ${mechs.length ? `<div class="sh-mech-tags">${mechs.map(m=>`<span class="sh-tag">${m}</span>`).join('')}</div>` : ''}
+      </div>
+      <div class="sh-photo">
+        ${g.GameplayURL ? `<img src="${g.GameplayURL}" alt="Gameplay" onerror="this.parentElement.innerHTML='<div class=\'sh-photo-ph\'>Gameplay Photo</div>'">` : '<div class="sh-photo-ph">Gameplay Photo</div>'}
+      </div>
+    </div>
+
+    <div class="sh-bottom">
+      <div class="sh-info">${infoRows || '<div class="sh-info-row" style="color:#bbb;font-family:\'Barlow Condensed\',sans-serif;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase">Details appear here</div>'}</div>
+      <div class="sh-ratings">
+        <div class="sh-rating-person">
+          <span class="sh-rating-name">James</span>
+          <div class="sh-rating-stars">${jR>0?stars(jR,20):''}</div>
+          <span class="sh-rating-num" style="color:${jR>0?'#222':'#ccc'}">${jR>0?jR.toFixed(1):'—'}</span>
+        </div>
+        <div class="sh-rating-person">
+          <span class="sh-rating-name">Alysa</span>
+          <div class="sh-rating-stars">${aR>0?stars(aR,20):''}</div>
+          <span class="sh-rating-num" style="color:${aR>0?'#222':'#ccc'}">${aR>0?aR.toFixed(1):'—'}</span>
+        </div>
+        <hr class="sh-rating-divider">
+        <div class="sh-overall">
+          <div>
+            <div class="sh-overall-label">Overall</div>
+            <div class="sh-overall-stars">${overall>0?stars(overall,16):''}</div>
+          </div>
+          <div class="sh-overall-num">${overall>0?overall.toFixed(1):'—'}</div>
+        </div>
+      </div>
+    </div>
+
+    ${linksHtml ? `<div class="sh-links">${linksHtml}</div>` : ''}
+
+    <div class="sh-footer">
+      ${g.Designer ? `<div class="sh-designer">Designer: ${g.Designer}</div>` : ''}
+      ${g.Publisher ? `<div class="sh-designer" style="color:#555">Publisher: ${g.Publisher}</div>` : ''}
+    </div>
+
+    ${expansionsHtml ? `<div>${expansionsHtml}</div>` : ''}
+
+    <!-- ADD EXPANSION -->
+    <div class="card-section">
+      <div class="card-section-header">
+        <span class="card-section-icon">📦</span>
+        <span class="card-section-title">Add Expansion</span>
+        <button class="toggle-btn" onclick="toggleSec('exp-body',this)">▼</button>
+      </div>
+      <div id="exp-body">
+        <div class="exp-add-form">
+          <div>
+            <div class="exp-form-label">Expansion Name *</div>
+            <input type="text" id="exp-name" placeholder="e.g. X-Men expansion">
+          </div>
+          <div>
+            <div class="exp-form-label">Description</div>
+            <textarea id="exp-desc" placeholder="What does this expansion add?"></textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;flex-wrap:wrap">
+            <div><div class="exp-form-label">Video URL</div><input type="url" id="exp-video" placeholder="https://..."></div>
+            <div><div class="exp-form-label">Rulebook URL</div><input type="url" id="exp-rules" placeholder="https://..."></div>
+            <div><div class="exp-form-label">BGG URL</div><input type="url" id="exp-bgg" placeholder="https://..."></div>
+          </div>
+          <div><div class="exp-form-label">Cover Photo URL</div><input type="url" id="exp-cover" placeholder="https://drive.google.com/..."></div>
+        </div>
+        <div class="exp-add-btn-row">
+          <button class="card-log-btn" id="exp-save-btn" onclick="saveExpansion()">+ Add Expansion</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLAY LOG -->
+    <div class="card-section">
+      <div class="card-section-header">
+        <span class="card-section-icon">🎲</span>
+        <span class="card-section-title">Play Log</span>
+        <button class="toggle-btn" onclick="toggleSec('plays-body',this)">▼</button>
+      </div>
+      <div id="plays-body">
+        <div class="play-form">
+          <div class="play-row">
+            <div class="pf"><label>Date</label><input type="date" id="p-date"></div>
+            <div class="pf">
+              <label>Players</label>
+              <div class="pchk">
+                <label><input type="checkbox" id="p-james" checked> James</label>
+                <label><input type="checkbox" id="p-alysa"> Alysa</label>
+              </div>
+            </div>
+            <div class="pf" id="jswrap"><label>James Score</label><input type="text" id="p-jscore" placeholder="42"></div>
+            <div class="pf" id="aswrap" style="display:none"><label>Alysa Score</label><input type="text" id="p-ascore" placeholder="38"></div>
+            <div class="pf">
+              <label>Winner</label>
+              <select id="p-winner">
+                <option value="">—</option>
+                <option>James</option>
+                <option>Alysa</option>
+                <option>Both / Co-op Win</option>
+                <option>No Winner</option>
+              </select>
+            </div>
+          </div>
+          <div class="pf" style="width:100%"><label>Notes</label><input type="text" id="p-notes" placeholder="Optional…" style="width:100%"></div>
+          <button class="card-log-btn" id="play-save-btn" onclick="logPlay()">+ Log Play</button>
+        </div>
+        <div class="play-history" id="play-log"></div>
+      </div>
+    </div>
+
+    <!-- ASK CLAUDE -->
+    <div class="card-section" style="border-radius:0 0 5px 5px">
+      <div class="card-section-header">
+        <span class="card-section-icon">💬</span>
+        <span class="card-section-title">Ask Claude — Rules Q&amp;A</span>
+        <button class="toggle-btn" onclick="toggleSec('ask-body',this)">▼</button>
+      </div>
+      <div id="ask-body">
+        <div class="chat-win" id="chat-win">
+          <div class="msg ai"><div class="av">BV</div><div class="bubble">Hi! Ask me anything about <strong>${g.Title}</strong> — rules, setup, edge cases, strategy tips.</div></div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-inp" placeholder="Ask a rules question…" onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="chat-send" onclick="sendChat()">Ask</button>
+        </div>
+        <div class="chat-hint">AI-generated — verify with the rulebook for competitive play.</div>
+      </div>
+    </div>
+
+  </div>`;
+
+  renderPlays(plays);
+  document.getElementById('p-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('p-alysa').addEventListener('change', function() {
+    document.getElementById('aswrap').style.display = this.checked ? '' : 'none';
+  });
+}
+
+// ── TOGGLE ──
+function toggleSec(id, btn) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const hidden = el.style.display === 'none';
+  el.style.display = hidden ? '' : 'none';
+  btn.textContent = hidden ? '▼' : '▶';
+}
+
+// ── PLAYS ──
+function renderPlays(plays) {
+  const log = document.getElementById('play-log');
+  if (!log) return;
+  if (!plays.length) { log.innerHTML = '<div class="no-plays">No plays logged yet</div>'; return; }
+  log.innerHTML = plays.map(p => {
+    const dateStr = p.Date ? new Date(p.Date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+    const scores = [p.JScore?'James: '+p.JScore:'', p.AScore?'Alysa: '+p.AScore:''].filter(Boolean);
+    return `<div class="play-entry">
+      <div class="pe-left">
+        <div class="pe-date">${dateStr}</div>
+        <div class="pe-players">${p.Players||''}</div>
+        ${p.Winner ? `<div class="pe-winner">🏆 ${p.Winner}</div>` : ''}
+        ${scores.length ? `<div class="pe-scores">${scores.join(' · ')}</div>` : ''}
+        ${p.Notes ? `<div class="pe-scores" style="font-style:italic">${p.Notes}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function logPlay() {
+  const date = document.getElementById('p-date').value;
+  const james = document.getElementById('p-james').checked;
+  const alysa = document.getElementById('p-alysa').checked;
+  if (!date) { showToast('Please pick a date'); return; }
+  if (!james && !alysa) { showToast('Select at least one player'); return; }
+
+  const btn = document.getElementById('play-save-btn');
+  btn.textContent = 'Saving…'; btn.classList.add('saving');
+
+  const playerList = [james?'James':null, alysa?'Alysa':null].filter(Boolean).join(' & ');
+
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'logPlay',
+        gameSlug: SLUG,
+        date,
+        players: playerList,
+        jScore: james ? document.getElementById('p-jscore').value.trim() : '',
+        aScore: alysa ? document.getElementById('p-ascore').value.trim() : '',
+        winner: document.getElementById('p-winner').value,
+        notes: document.getElementById('p-notes').value.trim(),
+      })
+    });
+    showToast('Play logged! ✓');
+    document.getElementById('p-jscore').value = '';
+    document.getElementById('p-ascore').value = '';
+    document.getElementById('p-winner').value = '';
+    document.getElementById('p-notes').value = '';
+    // reload plays
+    const playsRes = await fetch(API + '?action=getPlays&slug=' + encodeURIComponent(SLUG));
+    const plays = await playsRes.json();
+    renderPlays(plays||[]);
+  } catch(e) {
+    showToast('Error saving play');
+  }
+  btn.textContent = '+ Log Play'; btn.classList.remove('saving');
+}
+
+// ── EXPANSIONS ──
+async function saveExpansion() {
+  const name = document.getElementById('exp-name').value.trim();
+  if (!name) { showToast('Enter expansion name'); return; }
+
+  const btn = document.getElementById('exp-save-btn');
+  btn.textContent = 'Saving…'; btn.classList.add('saving');
+
+  try {
+    await fetch(API, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'addExpansion',
+        gameSlug: SLUG,
+        name,
+        desc: document.getElementById('exp-desc').value.trim(),
+        video: document.getElementById('exp-video').value.trim(),
+        rules: document.getElementById('exp-rules').value.trim(),
+        bgg: document.getElementById('exp-bgg').value.trim(),
+        cover: document.getElementById('exp-cover').value.trim(),
+      })
+    });
+    showToast(`"${name}" added! Reload to see it.`);
+    ['exp-name','exp-desc','exp-video','exp-rules','exp-bgg','exp-cover'].forEach(id => document.getElementById(id).value = '');
+  } catch(e) {
+    showToast('Error saving expansion');
+  }
+  btn.textContent = '+ Add Expansion'; btn.classList.remove('saving');
+}
+
+// ── ASK CLAUDE ──
+async function sendChat() {
+  const inp = document.getElementById('chat-inp');
+  const q = inp.value.trim(); if (!q) return;
+  inp.value = '';
+  appendMsg('user', q);
+  const loadId = appendMsg('ai', 'Thinking…', true);
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514', max_tokens: 1000,
+        system: `You are a board game rules expert for "${GAME?.Title||'this game'}". ${GAME?.Description?'Game description: '+GAME.Description+' ':''} ${GAME?.Mechanisms?'Mechanisms: '+GAME.Mechanisms+'. ':''} Answer rules questions clearly and concisely. If unsure, recommend checking the rulebook.`,
+        messages: [{ role: 'user', content: q }]
+      })
+    });
+    const data = await resp.json();
+    updateMsg(loadId, data.content.map(c=>c.text||'').join(''));
+  } catch(e) { updateMsg(loadId, 'Could not connect. Please try again.'); }
+}
+function appendMsg(role, text, loading=false) {
+  const win = document.getElementById('chat-win');
+  const id = 'msg'+Date.now()+Math.random();
+  const div = document.createElement('div');
+  div.className='msg '+role; div.id=id;
+  div.innerHTML='<div class="av">'+(role==='user'?'ME':'BV')+'</div><div class="bubble'+(loading?' loading':'')+'">'+text+'</div>';
+  win.appendChild(div); win.scrollTop=win.scrollHeight; return id;
+}
+function updateMsg(id, text) {
+  const el=document.getElementById(id);
+  if(el){el.querySelector('.bubble').textContent=text;el.querySelector('.bubble').classList.remove('loading');}
+  const win=document.getElementById('chat-win'); if(win) win.scrollTop=99999;
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+init();
+</script>
+</body>
+</html>
