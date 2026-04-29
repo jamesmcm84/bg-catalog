@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=0.5, maximum-scale=5.0">
+<title>BoardVault — Add Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --gold: #F5A623; --gold-dk: #C47D0A;
+  --red: #CC1A1A; --teal: #1A7A7A;
+  --dark: #2C2C2E; --dark2: #363638; --dark3: #3A3A3C;
+  --border: #4A4A4E; --text: #F0EAE0; --muted: #999;
+  --light2: #D4CCB8; --green: #4CAF77; --panel: #313133;
+  --blue: #1A5FAA; --purple: #6A2FA0;
+}
+html, body { background: #3A3A3C; color: var(--text); font-family: 'Barlow', sans-serif; }
+
+/* ── SHELL ── */
+header {
+  background: #252527; border-bottom: 2px solid var(--gold);
+  padding: 0.85rem 2rem; display: flex; align-items: center; justify-content: space-between;
+  z-index: 300;
+}
+.logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px; color: var(--gold); }
+.logo em { color: var(--text); font-style: normal; }
+
+/* TAB PAGES - removed, sections now embedded in card */
+
+/* WORKSPACE (form + preview) */
+.workspace {
+  display: grid; grid-template-columns: 430px 1fr;
+  height: calc(100vh - 58px); overflow: hidden;
+}
+.form-panel {
+  background: var(--panel); border-right: 1px solid var(--border);
+  overflow-y: auto; padding: 1.4rem;
+  display: flex; flex-direction: column; gap: 1.3rem;
+  height: 100%;
+}
+.form-panel::-webkit-scrollbar { width: 5px; }
+.form-panel::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+.preview-panel {
+  background: #424244; overflow-y: auto;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 1.8rem 2rem 5rem;
+  height: 100%;
+}
+.preview-panel::-webkit-scrollbar { width: 5px; }
+.preview-panel::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
+.preview-label {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase; color: #2e2e2e; text-align: center; margin-bottom: 1.2rem;
+}
+
+/* FORM ELEMENTS */
+.fsec {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold);
+  border-bottom: 1px solid var(--border); padding-bottom: 5px;
+}
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--light2);
+}
+.field input, .field textarea, .field select {
+  background: var(--dark3); border: 1px solid var(--border);
+  color: var(--text); font-family: 'Barlow', sans-serif; font-size: 0.88rem;
+  padding: 7px 10px; border-radius: 6px; outline: none; width: 100%; transition: border-color 0.15s;
+}
+.field input:focus, .field textarea:focus { border-color: var(--gold); }
+.field textarea { resize: vertical; min-height: 85px; line-height: 1.5; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 9px; }
+
+/* slider */
+.slider-wrap { display: flex; align-items: center; gap: 10px; }
+.slider-wrap input[type=range] {
+  flex: 1; -webkit-appearance: none; height: 4px;
+  background: var(--dark3); border: 1px solid var(--border); border-radius: 2px; padding: 0; cursor: pointer;
+}
+.slider-wrap input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--gold); cursor: pointer;
+}
+.sval { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--gold); min-width: 34px; text-align: right; }
+
+/* tag chips */
+.chips-wrap {
+  background: var(--dark3); border: 1px solid var(--border); border-radius: 6px;
+  padding: 5px 8px; display: flex; flex-wrap: wrap; gap: 4px;
+  cursor: text; min-height: 38px; transition: border-color 0.15s;
+}
+.chips-wrap:focus-within { border-color: var(--gold); }
+.chip {
+  background: rgba(245,166,35,0.15); color: var(--gold);
+  border: 1px solid rgba(245,166,35,0.3);
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  padding: 2px 6px; border-radius: 3px; display: flex; align-items: center; gap: 3px;
+}
+.chip .x { cursor: pointer; opacity: 0.6; font-size: 0.75rem; }
+.chip .x:hover { opacity: 1; }
+.chips-wrap input {
+  background: transparent; border: none; outline: none; color: var(--text);
+  font-family: 'Barlow', sans-serif; font-size: 0.83rem; min-width: 80px; flex: 1; padding: 2px 3px;
+}
+
+/* image slots */
+.img-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.img-slot {
+  border: 1.5px dashed var(--border); border-radius: 7px; aspect-ratio: 4/3;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.18s; overflow: hidden; position: relative; background: var(--dark3);
+}
+.img-slot:hover { border-color: var(--gold-dk); }
+.img-slot.has-img { border-style: solid; border-color: #555; }
+.img-slot input { display: none; }
+.img-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.slot-ico { font-size: 1.3rem; pointer-events: none; }
+.slot-lbl { font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #555; margin-top: 4px; pointer-events: none; }
+.rm-img {
+  position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.75);
+  border: none; color: #fff; width: 20px; height: 20px; border-radius: 50%;
+  cursor: pointer; font-size: 11px; display: none; align-items: center; justify-content: center; z-index: 2;
+}
+.img-slot.has-img .rm-img { display: flex; }
+
+/* color swatches */
+.swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+.swatch { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.15s, border-color 0.15s; }
+.swatch:hover { transform: scale(1.15); }
+.swatch.active { border-color: white; }
+
+/* buttons */
+.btn-gold {
+  width: 100%; background: var(--gold); color: var(--dark);
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.95rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; border: none;
+  padding: 11px; border-radius: 7px; cursor: pointer; transition: background 0.15s;
+}
+.btn-gold:hover { background: #e6962a; }
+.btn-outline {
+  width: 100%; background: transparent; color: var(--muted);
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.82rem; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid var(--border);
+  padding: 9px; border-radius: 7px; cursor: pointer; transition: all 0.15s;
+}
+.btn-outline:hover { border-color: var(--muted); color: var(--text); }
+
+/* ══════════════════════════════
+   THE SHEET
+══════════════════════════════ */
+.sheet {
+  width: 100%; max-width: 700px;
+  background: #F4EFE5; border-radius: 5px; overflow: visible;
+  color: #1A1A1A; font-family: 'Barlow', sans-serif;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.55), 0 4px 16px rgba(0,0,0,0.3);
+}
+
+/* header bar */
+.sh-topbar {
+  background: #111; display: flex; align-items: stretch;
+  min-height: 200px; overflow: hidden;
+}
+.sh-cover { width: 190px; flex-shrink: 0; overflow: hidden; position: relative; background: #222; }
+.sh-cover img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+.sh-cover-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+.sh-title-block { flex: 1; padding: 0.9rem 1.1rem; display: flex; flex-direction: column; justify-content: space-between; }
+.sh-badges-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: space-between; }
+.sh-badge {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; white-space: nowrap;
+}
+.sh-badge-gold { background: var(--gold); color: #111; }
+.sh-badge-teal { background: #1A7A7A; color: #fff; }
+.sh-badge-purple { background: var(--purple); color: #fff; }
+.sh-badge-red { background: var(--red); color: #fff; }
+
+/* mobile responsive */
+@media (max-width: 700px) {
+  .workspace { grid-template-columns: 1fr; height: auto; overflow: visible; }
+  .form-panel { height: auto; max-height: none; }
+  .preview-panel { padding: 1.2rem 1rem 4rem; }
+  .tab { font-size: 0.65rem; padding: 9px 12px; letter-spacing: 1px; }
+  .plays-page, .ask-page { padding: 1.2rem 1rem 4rem; }
+  .ask-page { height: auto; min-height: calc(100vh - 94px); }
+  .sh-title { font-size: 1.8rem !important; }
+  .sh-bottom { grid-template-columns: 1fr; }
+  .sh-info { border-right: none; border-bottom: 1px solid #D0CAB8; }
+  .sh-mid { grid-template-columns: 1fr; }
+  .sh-photo { min-height: 160px; }
+}
+.sh-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; letter-spacing: 1px;
+  line-height: 1; color: #F4EFE5; display: block; padding: 6px 0 0;
+}
+.sh-meta { display: flex; gap: 14px; flex-wrap: wrap; }
+.sh-meta-item {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 600; color: #bbb;
+}
+
+/* description + photo row */
+.sh-mid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #D0CAB8; }
+.sh-desc { padding: 1.1rem 1.3rem; border-right: 1px solid #D0CAB8; }
+.sh-desc p { font-size: 0.86rem; line-height: 1.65; color: #333; }
+.sh-desc-ph { color: #bbb; font-style: italic; }
+.sh-mech-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }
+.sh-tag {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.63rem; font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 3px;
+  background: #E0D8CC; color: #555; border: 1px solid #CBC3B5;
+}
+.sh-photo {
+  overflow: hidden; background: #DDD8CC; min-height: 130px;
+  display: flex; align-items: center; justify-content: center;
+}
+.sh-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sh-photo-ph { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; color: #aaa; }
+
+/* info + ratings row */
+.sh-bottom { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #D0CAB8; }
+.sh-info { padding: 1rem 1.3rem; border-right: 1px solid #D0CAB8; }
+.sh-info-row {
+  display: flex; font-size: 0.8rem; line-height: 1.4;
+  border-bottom: 1px dotted #D0CAB8; padding: 4px 0; gap: 5px;
+}
+.sh-info-row:last-child { border-bottom: none; }
+.sh-info-key { font-weight: 700; color: #333; min-width: 105px; flex-shrink: 0; }
+.sh-info-val { color: #555; }
+.cpip { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: #CCC; margin-right: 2px; }
+.cpip.on { background: var(--red); }
+
+/* ratings panel */
+.sh-ratings { padding: 1rem 1.3rem; display: flex; flex-direction: column; gap: 12px; }
+.sh-rating-person { display: flex; align-items: center; justify-content: space-between; }
+.sh-rating-name {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; font-weight: 400;
+  letter-spacing: 2px; color: #555; min-width: 65px;
+}
+.sh-rating-stars { display: flex; gap: 3px; }
+.sstar { font-size: 20px; color: var(--gold); }
+.sstar.empty { color: #CCC; }
+.sh-rating-num {
+  font-family: 'Bebas Neue', sans-serif; font-size: 2rem; line-height: 1; color: #222;
+}
+.sh-rating-divider { border: none; border-top: 1px solid #D0CAB8; margin: 2px 0; }
+.sh-overall {
+  display: flex; align-items: center; justify-content: space-between;
+  background: #1A1A1A; margin: -1rem -1.3rem -1rem; padding: 0.7rem 1.3rem; margin-top: 4px;
+}
+.sh-overall-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #888; }
+.sh-overall-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; line-height: 1; color: var(--gold); }
+.sh-overall-stars { display: flex; gap: 2px; margin-top: 2px; }
+
+/* links row */
+.sh-links {
+  background: #ECEAE0; padding: 0.7rem 1.3rem;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  border-bottom: 1px solid #D0CAB8;
+}
+.sh-link {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; text-decoration: none;
+  padding: 4px 12px; border-radius: 4px; border: 1.5px solid #bbb; color: #333;
+  display: flex; align-items: center; gap: 5px; transition: all 0.15s; cursor: pointer;
+  background: #fff;
+}
+.sh-link:hover { border-color: #555; color: #111; }
+.sh-link.bgg { background: #E8622A; border-color: #E8622A; color: #fff; }
+.sh-link.bgg:hover { background: #c9521f; }
+.sh-link-icon { font-size: 14px; }
+
+/* footer */
+.sh-footer {
+  background: #1A1A1A; padding: 0.6rem 1.3rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sh-designer { font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; letter-spacing: 1px; color: #666; }
+.sh-year { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; color: var(--gold); border: 1px solid var(--gold-dk); padding: 2px 9px; border-radius: 3px; }
+
+/* ── EXPANSIONS ── */
+.exp-list { display: flex; flex-direction: column; gap: 0; }
+.exp-item {
+  display: grid; grid-template-columns: 90px 1fr; gap: 0;
+  border-bottom: 1px solid #D0CAB8; background: #F4EFE5;
+}
+.exp-item:last-child { border-bottom: none; }
+.exp-item-cover {
+  overflow: hidden; background: #DDD8CC;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 90px; border-right: 1px solid #D0CAB8;
+}
+.exp-item-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.exp-item-cover-ph { font-size: 1.8rem; color: #bbb; }
+.exp-item-body { padding: 0.8rem 1rem; display: flex; flex-direction: column; gap: 5px; }
+.exp-item-name {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1px; color: #1A1A1A; line-height: 1;
+}
+.exp-item-desc { font-size: 0.78rem; line-height: 1.5; color: #555; }
+.exp-item-links { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 3px; }
+.exp-link {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; text-decoration: none;
+  padding: 2px 8px; border-radius: 3px; border: 1px solid #C8C0B0; color: #555;
+  background: #fff; display: flex; align-items: center; gap: 3px; transition: all 0.12s;
+}
+.exp-link:hover { border-color: #888; color: #222; }
+.exp-link.bgg { background: #E8622A; border-color: #E8622A; color: #fff; }
+.exp-link.bgg:hover { background: #c9521f; }
+.exp-item-delete {
+  position: absolute; top: 5px; right: 6px;
+  background: none; border: none; color: #ccc; cursor: pointer; font-size: 12px;
+  transition: color 0.15s;
+}
+.exp-item-delete:hover { color: #CC1A1A; }
+.exp-item-wrapper { position: relative; }
+
+.exp-add-form { padding: 0.9rem 1.3rem; background: #F4EFE5; border-top: 1px solid #D0CAB8; }
+.exp-form-inner { display: flex; gap: 12px; margin-bottom: 10px; }
+.exp-cover-slot {
+  width: 80px; flex-shrink: 0; border: 1.5px dashed #C8C0B0; border-radius: 6px;
+  aspect-ratio: 3/4; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; cursor: pointer; overflow: hidden; background: #EAE4D8;
+  transition: border-color 0.15s;
+}
+.exp-cover-slot:hover { border-color: #888; }
+.exp-cover-slot input { display: none; }
+.exp-cover-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.exp-fields { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.exp-fields textarea {
+  background: #fff; border: 1px solid #C8C0B0; color: #222;
+  font-family: 'Barlow', sans-serif; font-size: 0.82rem;
+  padding: 5px 8px; border-radius: 4px; outline: none; resize: vertical;
+  min-height: 56px; width: 100%; line-height: 1.4;
+}
+.exp-fields textarea:focus { border-color: #888; }
+.exp-links-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.exp-form-btns { display: flex; gap: 8px; }
+.exp-add-btn-row { padding: 0.7rem 1.3rem; background: #ECEAE0; border-top: 1px solid #D0CAB8; }
+
+/* ── card sections below ── */
+
+/* type buttons */
+.type-btn {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 4px 12px; border-radius: 4px;
+  border: 1.5px solid var(--border); background: var(--dark3); color: var(--muted);
+  cursor: pointer; transition: all 0.15s;
+}
+.type-btn:hover { border-color: #8B5FC0; color: #C89EE0; }
+.type-btn.active { background: var(--purple); border-color: var(--purple); color: #fff; }
+
+/* ── CARD SECTIONS (Play Log + Ask Claude on card) ── */
+.card-section {
+  background: #ECEAE0;
+  border-top: 2px solid #D0CAB8;
+}
+.card-section-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0.7rem 1.3rem;
+  background: #1A1A1A;
+  cursor: default;
+}
+.card-section-icon { font-size: 14px; }
+.card-section-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px;
+  color: #F4EFE5; flex: 1;
+}
+.card-section-toggle {
+  background: none; border: none; color: #888; cursor: pointer; font-size: 12px;
+  padding: 2px 6px; border-radius: 3px; transition: all 0.15s; line-height: 1;
+}
+.card-section-toggle:hover { color: var(--gold); }
+
+/* play log on card */
+.card-play-form {
+  padding: 0.9rem 1.3rem;
+  border-bottom: 1px solid #D0CAB8;
+  background: #F4EFE5;
+}
+.card-play-row {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 10px;
+}
+.card-play-field { display: flex; flex-direction: column; gap: 3px; }
+.card-play-field label {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; color: #888;
+}
+.card-play-field input, .card-play-field select {
+  background: #fff; border: 1px solid #C8C0B0; color: #222;
+  font-family: 'Barlow', sans-serif; font-size: 0.83rem;
+  padding: 5px 8px; border-radius: 4px; outline: none; transition: border-color 0.15s;
+}
+.card-play-field input:focus { border-color: #888; }
+.card-play-field input[type=date] { width: 130px; }
+.card-play-field input[type=text] { width: 80px; }
+.player-check { display: flex; gap: 10px; margin-top: 4px; }
+.player-check label {
+  display: flex; align-items: center; gap: 4px;
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.5px; text-transform: uppercase; color: #555; cursor: pointer;
+}
+.player-check input[type=checkbox] { accent-color: #555; }
+.card-log-btn {
+  background: #1A1A1A; color: #F4EFE5;
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; border: none;
+  padding: 7px 16px; border-radius: 4px; cursor: pointer; transition: background 0.15s;
+}
+.card-log-btn:hover { background: #333; }
+
+.card-play-history { padding: 0.8rem 1.3rem; background: #F4EFE5; display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto; }
+.card-play-history::-webkit-scrollbar { width: 4px; }
+.card-play-history::-webkit-scrollbar-thumb { background: #C8C0B0; border-radius: 2px; }
+.no-plays { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: #bbb; text-align: center; padding: 1rem 0; }
+
+.play-entry {
+  display: flex; align-items: center; justify-content: space-between;
+  background: #fff; border: 1px solid #D8D0C4; border-radius: 5px;
+  padding: 0.6rem 0.9rem; gap: 10px;
+}
+.play-entry-left { display: flex; flex-direction: column; gap: 2px; }
+.play-date { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #999; }
+.play-players { font-family: 'Barlow', sans-serif; font-size: 0.82rem; color: #333; }
+.play-winner { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #8B6914; }
+.play-scores { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; color: #888; }
+.play-delete { background: none; border: none; color: #ccc; cursor: pointer; font-size: 14px; transition: color 0.15s; flex-shrink: 0; }
+.play-delete:hover { color: #CC1A1A; }
+
+/* ask claude on card */
+.card-chat-window {
+  background: #F4EFE5; padding: 0.9rem 1.3rem;
+  display: flex; flex-direction: column; gap: 10px;
+  max-height: 280px; overflow-y: auto; border-bottom: 1px solid #D0CAB8;
+}
+.card-chat-window::-webkit-scrollbar { width: 4px; }
+.card-chat-window::-webkit-scrollbar-thumb { background: #C8C0B0; border-radius: 2px; }
+.msg { display: flex; gap: 8px; align-items: flex-start; }
+.msg.user { flex-direction: row-reverse; }
+.msg-avatar {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem; font-weight: 700;
+}
+.msg.user .msg-avatar { background: #1A1A1A; color: #F4EFE5; }
+.msg.ai .msg-avatar { background: #E0D8CC; color: #555; border: 1px solid #C8C0B0; }
+.msg-bubble {
+  max-width: 82%; padding: 7px 11px; border-radius: 8px;
+  font-size: 0.83rem; line-height: 1.55;
+}
+.msg.user .msg-bubble { background: #1A1A1A; color: #F4EFE5; border-radius: 8px 2px 8px 8px; }
+.msg.ai .msg-bubble { background: #fff; color: #333; border-radius: 2px 8px 8px 8px; border: 1px solid #D8D0C4; }
+.msg.ai .msg-bubble.loading { color: #aaa; font-style: italic; }
+.card-chat-input {
+  display: flex; gap: 0; background: #F4EFE5; padding: 0.7rem 1.3rem; border-bottom: 1px solid #D0CAB8;
+}
+.card-chat-input input {
+  flex: 1; background: #fff; border: 1px solid #C8C0B0; border-right: none;
+  color: #222; font-family: 'Barlow', sans-serif; font-size: 0.85rem;
+  padding: 8px 11px; border-radius: 4px 0 0 4px; outline: none;
+}
+.card-chat-input input:focus { border-color: #888; }
+.btn-send {
+  background: #1A1A1A; color: #F4EFE5;
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; border: none;
+  padding: 8px 16px; border-radius: 0 4px 4px 0; cursor: pointer; transition: background 0.15s;
+}
+.btn-send:hover { background: #333; }
+.card-chat-hint { background: #ECEAE0; padding: 0.4rem 1.3rem; font-family: 'Barlow Condensed', sans-serif; font-size: 0.62rem; letter-spacing: 1px; color: #aaa; }
+
+/* toast */
+#toast {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  background: var(--dark2); color: var(--text);
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.88rem; letter-spacing: 1px;
+  padding: 10px 16px; border-radius: 8px; border-left: 3px solid var(--green);
+  opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; z-index: 999;
+}
+#toast.show { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<header>
+  <div><div class="logo">Board<em>Vault</em></div></div>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Game Entry</div>
+</header>
+
+
+<!-- ════════ EDIT CARD ════════ -->
+<div class="workspace">
+
+  <!-- FORM -->
+  <div class="form-panel">
+    <div class="fsec">Basic Info</div>
+    <div class="field"><label>Game Title *</label><input type="text" id="f-title" placeholder="e.g. 5-Minute Marvel" oninput="update()"></div>
+    <div class="row2">
+      <div class="field"><label>Year</label><input type="text" id="f-year" placeholder="2018" oninput="update()"></div>
+      <div class="field"><label>Location / Shelf</label><input type="text" id="f-location" placeholder="CAB-02" oninput="update()"></div>
+    </div>
+    <div class="row3">
+      <div class="field"><label>Players</label><input type="text" id="f-players" placeholder="2–5" oninput="update()"></div>
+      <div class="field"><label>Play Time</label><input type="text" id="f-time" placeholder="5 min" oninput="update()"></div>
+      <div class="field"><label>Age</label><input type="text" id="f-age" placeholder="8+" oninput="update()"></div>
+    </div>
+
+    <div class="fsec">Classification</div>
+    <div class="field">
+      <label>Game Type</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px" id="type-btns">
+        <button type="button" class="type-btn" data-val="Family" onclick="pickType(this)">Family</button>
+        <button type="button" class="type-btn" data-val="Strategy" onclick="pickType(this)">Strategy</button>
+        <button type="button" class="type-btn" data-val="Party" onclick="pickType(this)">Party</button>
+        <button type="button" class="type-btn" data-val="Family/Strategy" onclick="pickType(this)">Family/Strategy</button>
+        <button type="button" class="type-btn" data-val="Filler" onclick="pickType(this)">Filler</button>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Game Style</label><input type="text" id="f-style" placeholder="e.g. Cooperative" oninput="update()"></div>
+      <div class="field"><label>Category</label><input type="text" id="f-category" placeholder="e.g. Card Game" oninput="update()"></div>
+    </div>
+    <div class="field"><label>Theme</label><input type="text" id="f-theme" placeholder="e.g. Superheroes" oninput="update()"></div>
+    <div class="field">
+      <label>Mechanisms <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);font-size:0.63rem">(Enter to add)</span></label>
+      <div class="chips-wrap" id="mech-wrap" onclick="this.querySelector('input').focus()">
+        <input type="text" id="mech-input" placeholder="e.g. Real-Time" onkeydown="addChip(event)">
+      </div>
+    </div>
+
+    <div class="fsec">Description</div>
+    <div class="field"><label>Description</label><textarea id="f-desc" placeholder="Describe how the game plays…" oninput="update()"></textarea></div>
+
+    <div class="fsec">Ratings</div>
+    <div class="field">
+      <label>Complexity</label>
+      <div class="slider-wrap">
+        <input type="range" min="1" max="5" step="1" value="1" id="f-complexity" oninput="update()">
+        <span class="sval" id="complexity-val">1</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;color:var(--muted)">/5</span>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>James Rating</label>
+        <div class="slider-wrap">
+          <input type="range" min="0" max="5" step="0.5" value="0" id="f-james" oninput="update()">
+          <span class="sval" id="james-val">—</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Alysa Rating</label>
+        <div class="slider-wrap">
+          <input type="range" min="0" max="5" step="0.5" value="0" id="f-alysa" oninput="update()">
+          <span class="sval" id="alysa-val">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="fsec">Credits</div>
+    <div class="field"><label>Designer(s)</label><input type="text" id="f-designer" placeholder="Conner Reid" oninput="update()"></div>
+    <div class="field"><label>Publisher</label><input type="text" id="f-publisher" placeholder="Spin Master" oninput="update()"></div>
+
+    <div class="fsec">Links</div>
+    <div class="field"><label>How-to-Play Video URL</label><input type="url" id="f-video" placeholder="https://youtube.com/..." oninput="update()"></div>
+    <div class="field"><label>Rulebook URL (Google Drive PDF)</label><input type="url" id="f-rulebook" placeholder="https://drive.google.com/..." oninput="update()"></div>
+    <div class="field"><label>BoardGameGeek Page URL</label><input type="url" id="f-bgg" placeholder="https://boardgamegeek.com/boardgame/..." oninput="update()"></div>
+
+    <div class="fsec">Photos</div>
+    <div class="img-grid">
+      <div class="img-slot" id="slot-cover" onclick="triggerImg('cover')">
+        <input type="file" id="img-cover" accept="image/*" onchange="loadImg(event,'cover')">
+        <div class="slot-ico">🖼️</div><div class="slot-lbl">Box / Cover Art</div>
+        <button class="rm-img" onclick="removeImg(event,'cover')">✕</button>
+      </div>
+      <div class="img-slot" id="slot-gameplay" onclick="triggerImg('gameplay')">
+        <input type="file" id="img-gameplay" accept="image/*" onchange="loadImg(event,'gameplay')">
+        <div class="slot-ico">🎲</div><div class="slot-lbl">Gameplay Photo</div>
+        <button class="rm-img" onclick="removeImg(event,'gameplay')">✕</button>
+      </div>
+    </div>
+
+    <div class="fsec">Accent Color</div>
+    <div class="swatches" id="swatches">
+      <div class="swatch active" style="background:#CC1A1A" data-color="#CC1A1A" onclick="pickColor(this)"></div>
+      <div class="swatch" style="background:#1A6ACC" data-color="#1A6ACC" onclick="pickColor(this)"></div>
+      <div class="swatch" style="background:#1A7A3A" data-color="#1A7A3A" onclick="pickColor(this)"></div>
+      <div class="swatch" style="background:#7A3AAA" data-color="#7A3AAA" onclick="pickColor(this)"></div>
+      <div class="swatch" style="background:#C47D0A" data-color="#C47D0A" onclick="pickColor(this)"></div>
+      <div class="swatch" style="background:#1A7A7A" data-color="#1A7A7A" onclick="pickColor(this)"></div>
+      <div class="swatch" style="background:#3A3A3E" data-color="#3A3A3E" onclick="pickColor(this)"></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+      <button class="btn-gold" onclick="saveGame()">Save to Catalog ↗</button>
+      <button class="btn-outline" onclick="resetForm()">Reset Form</button>
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-panel">
+    <div class="preview-label">Live Preview</div>
+    <div class="sheet" id="sheet">
+
+      <!-- header -->
+      <div class="sh-topbar">
+        <div class="sh-cover" id="sh-cover"><div class="sh-cover-ph">🎲</div></div>
+        <div class="sh-title-block">
+          <div class="sh-badges-row">
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <span class="sh-badge sh-badge-purple" id="sh-type-badge" style="display:none"></span>
+              <span class="sh-badge sh-badge-teal" id="sh-style-badge" style="display:none"></span>
+              <span class="sh-badge sh-badge-gold" id="sh-cat-badge" style="display:none"></span>
+            </div>
+            <span class="sh-badge sh-badge-red" id="sh-loc-badge" style="display:none"></span>
+          </div>
+          <div class="sh-title" id="sh-title" style="color:#444">Game Title</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div class="sh-meta" id="sh-meta"></div>
+            <div id="sh-year-sub" style="display:none;font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:3px;color:#fff;flex-shrink:0;margin-left:10px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- desc + photo -->
+      <div class="sh-mid">
+        <div class="sh-desc">
+          <p id="sh-desc" class="sh-desc-ph">Your description will appear here…</p>
+          <div class="sh-mech-tags" id="sh-mechs"></div>
+        </div>
+        <div class="sh-photo" id="sh-photo"><div class="sh-photo-ph">Gameplay Photo</div></div>
+      </div>
+
+      <!-- info + ratings -->
+      <div class="sh-bottom">
+        <div class="sh-info" id="sh-info">
+          <div class="sh-info-row" style="color:#bbb;font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase">Details appear here</div>
+        </div>
+        <div class="sh-ratings">
+          <div class="sh-rating-person">
+            <span class="sh-rating-name">James</span>
+            <div id="sh-james-stars" class="sh-rating-stars"></div>
+            <span class="sh-rating-num" id="sh-james-num" style="color:#ccc">—</span>
+          </div>
+          <div class="sh-rating-person">
+            <span class="sh-rating-name">Alysa</span>
+            <div id="sh-alysa-stars" class="sh-rating-stars"></div>
+            <span class="sh-rating-num" id="sh-alysa-num" style="color:#ccc">—</span>
+          </div>
+          <hr class="sh-rating-divider">
+          <div class="sh-overall">
+            <div>
+              <div class="sh-overall-label">Overall</div>
+              <div class="sh-overall-stars" id="sh-overall-stars"></div>
+            </div>
+            <div class="sh-overall-num" id="sh-overall-num">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- links -->
+      <div class="sh-links" id="sh-links">
+        <a class="sh-link" id="sh-link-video" href="#" style="display:none" target="_blank"><span class="sh-link-icon">▶</span> How to Play</a>
+        <a class="sh-link" id="sh-link-rules" href="#" style="display:none" target="_blank"><span class="sh-link-icon">📄</span> Rulebook</a>
+        <a class="sh-link bgg" id="sh-link-bgg" href="#" style="display:none" target="_blank"><span class="sh-link-icon">🎯</span> BGG</a>
+      </div>
+
+      <!-- footer -->
+      <div class="sh-footer">
+        <div>
+          <div class="sh-designer" id="sh-designer-line">Designer</div>
+          <div class="sh-designer" id="sh-publisher-line" style="color:#555"></div>
+        </div>
+        <div id="sh-year" class="sh-year" style="display:none"></div>
+      </div>
+
+      <!-- ── EXPANSIONS ON CARD ── -->
+      <div class="card-section">
+        <div class="card-section-header">
+          <span class="card-section-icon">📦</span>
+          <span class="card-section-title">Expansions</span>
+          <button class="card-section-toggle" onclick="toggleSection('expansions-body')">▼</button>
+        </div>
+        <div id="expansions-body">
+          <div class="exp-list" id="exp-list">
+            <div class="no-plays" id="exp-empty">No expansions added yet</div>
+          </div>
+          <div class="exp-add-form" id="exp-add-form" style="display:none">
+            <div class="exp-form-inner">
+              <div class="exp-cover-slot" id="exp-cover-slot" onclick="triggerExpImg()">
+                <input type="file" id="exp-img-input" accept="image/*" onchange="loadExpImg(event)">
+                <div class="slot-ico" id="exp-cover-ico">📦</div>
+                <div class="slot-lbl" id="exp-cover-lbl">Cover Photo</div>
+              </div>
+              <div class="exp-fields">
+                <div class="card-play-field" style="flex:1">
+                  <label>Expansion Name *</label>
+                  <input type="text" id="exp-name" placeholder="e.g. Marvel United: X-Men" style="width:100%">
+                </div>
+                <div class="card-play-field" style="flex:1">
+                  <label>Description</label>
+                  <textarea id="exp-desc" placeholder="Brief description of what this expansion adds…"></textarea>
+                </div>
+                <div class="exp-links-row">
+                  <div class="card-play-field" style="flex:1">
+                    <label>How-to-Play URL</label>
+                    <input type="url" id="exp-video" placeholder="https://youtube.com/..." style="width:100%">
+                  </div>
+                  <div class="card-play-field" style="flex:1">
+                    <label>Rulebook URL</label>
+                    <input type="url" id="exp-rules" placeholder="https://drive.google.com/..." style="width:100%">
+                  </div>
+                  <div class="card-play-field" style="flex:1">
+                    <label>BGG URL</label>
+                    <input type="url" id="exp-bgg" placeholder="https://boardgamegeek.com/..." style="width:100%">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="exp-form-btns">
+              <button class="card-log-btn" onclick="saveExpansion()">+ Add Expansion</button>
+              <button class="card-log-btn" style="background:#888" onclick="cancelExpansion()">Cancel</button>
+            </div>
+          </div>
+          <div class="exp-add-btn-row">
+            <button class="card-log-btn" id="exp-add-btn" onclick="showExpForm()">+ Add Expansion</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PLAY LOG ON CARD ── -->
+      <div class="card-section">
+        <div class="card-section-header">
+          <span class="card-section-icon">🎲</span>
+          <span class="card-section-title">Play Log</span>
+          <button class="card-section-toggle" onclick="toggleSection('plays-body')">▼</button>
+        </div>
+        <div id="plays-body">
+          <div class="card-play-form">
+            <div class="card-play-row">
+              <div class="card-play-field">
+                <label>Date</label>
+                <input type="date" id="p-date">
+              </div>
+              <div class="card-play-field">
+                <label>Players</label>
+                <div class="player-check">
+                  <label><input type="checkbox" id="p-james" checked> James</label>
+                  <label><input type="checkbox" id="p-alysa"> Alysa</label>
+                </div>
+              </div>
+              <div class="card-play-field" id="james-score-wrap">
+                <label>James Score</label>
+                <input type="text" id="p-james-score" placeholder="42">
+              </div>
+              <div class="card-play-field" id="alysa-score-wrap" style="display:none">
+                <label>Alysa Score</label>
+                <input type="text" id="p-alysa-score" placeholder="38">
+              </div>
+              <div class="card-play-field">
+                <label>Winner</label>
+                <select id="p-winner">
+                  <option value="">—</option>
+                  <option>James</option>
+                  <option>Alysa</option>
+                  <option>Both / Co-op Win</option>
+                  <option>No Winner</option>
+                </select>
+              </div>
+              <div class="card-play-field">
+                <label>Notes</label>
+                <input type="text" id="p-notes" placeholder="Optional…">
+              </div>
+            </div>
+            <button class="card-log-btn" onclick="logPlay()">+ Log Play</button>
+          </div>
+          <div class="card-play-history" id="play-log">
+            <div class="no-plays">No plays logged yet</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ASK CLAUDE ON CARD ── -->
+      <div class="card-section" style="border-radius:0 0 5px 5px">
+        <div class="card-section-header">
+          <span class="card-section-icon">💬</span>
+          <span class="card-section-title">Ask Claude — Rules Q&amp;A</span>
+          <button class="card-section-toggle" onclick="toggleSection('ask-body')">▼</button>
+        </div>
+        <div id="ask-body">
+          <div class="card-chat-window" id="chat-window">
+            <div class="msg ai">
+              <div class="msg-avatar">BV</div>
+              <div class="msg-bubble">Hi! Ask me anything about <strong id="chat-game-name">this game</strong> — rules, setup, edge cases, strategy.</div>
+            </div>
+          </div>
+          <div class="card-chat-input">
+            <input type="text" id="chat-input" placeholder="Ask a rules question…" onkeydown="if(event.key==='Enter')sendChat()">
+            <button class="btn-send" onclick="sendChat()">Ask</button>
+          </div>
+          <div class="card-chat-hint">AI-generated — verify with rulebook for competitive play.</div>
+        </div>
+      </div>
+
+    </div><!-- /sheet -->
+  </div><!-- /preview -->
+
+</div><!-- /workspace -->
+
+
+<div id="toast"></div>
+
+<script>
+// ── STATE ──
+let chips = [];
+let imgs = { cover: null, gameplay: null };
+let accentColor = '#CC1A1A';
+let plays = [];
+let gameType = '';
+let expansions = [];
+let expImgData = null;
+
+// ── EXPANSIONS ──
+function showExpForm() {
+  document.getElementById('exp-add-form').style.display = '';
+  document.getElementById('exp-add-btn').style.display = 'none';
+  document.getElementById('exp-empty').style.display = 'none';
+}
+function cancelExpansion() {
+  document.getElementById('exp-add-form').style.display = 'none';
+  document.getElementById('exp-add-btn').style.display = '';
+  clearExpForm();
+  if (!expansions.length) document.getElementById('exp-empty').style.display = '';
+}
+function clearExpForm() {
+  ['exp-name','exp-desc','exp-video','exp-rules','exp-bgg'].forEach(id => document.getElementById(id).value = '');
+  expImgData = null;
+  const slot = document.getElementById('exp-cover-slot');
+  const existingImg = slot.querySelector('img'); if (existingImg) existingImg.remove();
+  document.getElementById('exp-cover-ico').style.display = '';
+  document.getElementById('exp-cover-lbl').style.display = '';
+}
+function triggerExpImg() { document.getElementById('exp-img-input').click(); }
+function loadExpImg(e) {
+  e.stopPropagation();
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    expImgData = ev.target.result;
+    const slot = document.getElementById('exp-cover-slot');
+    let img = slot.querySelector('img');
+    if (!img) { img = document.createElement('img'); slot.appendChild(img); }
+    img.src = expImgData;
+    document.getElementById('exp-cover-ico').style.display = 'none';
+    document.getElementById('exp-cover-lbl').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+function saveExpansion() {
+  const name = document.getElementById('exp-name').value.trim();
+  if (!name) { showToast('Please enter an expansion name'); return; }
+  const exp = {
+    id: Date.now(), name,
+    desc: document.getElementById('exp-desc').value.trim(),
+    video: document.getElementById('exp-video').value.trim(),
+    rules: document.getElementById('exp-rules').value.trim(),
+    bgg: document.getElementById('exp-bgg').value.trim(),
+    img: expImgData,
+  };
+  expansions.push(exp);
+  saveExpansions();
+  renderExpansions();
+  document.getElementById('exp-add-form').style.display = 'none';
+  document.getElementById('exp-add-btn').style.display = '';
+  clearExpForm();
+  showToast(`"${name}" added!`);
+}
+function deleteExpansion(id) {
+  expansions = expansions.filter(e => e.id !== id);
+  saveExpansions(); renderExpansions();
+}
+function renderExpansions() {
+  const list = document.getElementById('exp-list');
+  const empty = document.getElementById('exp-empty');
+  if (!expansions.length) {
+    list.innerHTML = ''; empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = expansions.map(exp => {
+    const links = [];
+    if (exp.video) links.push(`<a class="exp-link" href="${exp.video}" target="_blank">▶ How to Play</a>`);
+    if (exp.rules) links.push(`<a class="exp-link" href="${exp.rules}" target="_blank">📄 Rulebook</a>`);
+    if (exp.bgg) links.push(`<a class="exp-link bgg" href="${exp.bgg}" target="_blank">🎯 BGG</a>`);
+    return `<div class="exp-item-wrapper">
+      <div class="exp-item">
+        <div class="exp-item-cover">
+          ${exp.img ? `<img src="${exp.img}" alt="${exp.name}">` : '<div class="exp-item-cover-ph">📦</div>'}
+        </div>
+        <div class="exp-item-body">
+          <div class="exp-item-name">${exp.name}</div>
+          ${exp.desc ? `<div class="exp-item-desc">${exp.desc}</div>` : ''}
+          ${links.length ? `<div class="exp-item-links">${links.join('')}</div>` : ''}
+        </div>
+      </div>
+      <button class="exp-item-delete" onclick="deleteExpansion(${exp.id})">✕</button>
+    </div>`;
+  }).join('');
+}
+async function saveExpansions() {
+  try { await window.storage.set('boardvault_expansions_v1', JSON.stringify(expansions)); } catch(e) {}
+}
+async function loadExpansions() {
+  try {
+    const r = await window.storage.get('boardvault_expansions_v1');
+    if (r) { expansions = JSON.parse(r.value); renderExpansions(); }
+  } catch(e) {}
+}
+
+// ── SECTION TOGGLE ──
+function toggleSection(id) {
+  const el = document.getElementById(id);
+  const btn = el.previousElementSibling.querySelector('.card-section-toggle');
+  const hidden = el.style.display === 'none';
+  el.style.display = hidden ? '' : 'none';
+  btn.textContent = hidden ? '▼' : '▶';
+}
+
+// ── GAME TYPE ──
+function pickType(el) {
+  const val = el.dataset.val;
+  if (gameType === val) {
+    gameType = '';
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  } else {
+    gameType = val;
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.val === val));
+  }
+  update();
+}
+
+// ── TABS ──
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['edit','plays','ask'][i] === id));
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── CHIPS ──
+function addChip(e) {
+  if (e.key !== 'Enter' && e.key !== ',') return;
+  e.preventDefault();
+  const inp = document.getElementById('mech-input');
+  const val = inp.value.trim().replace(/,$/, '');
+  if (!val || chips.includes(val)) { inp.value = ''; return; }
+  chips.push(val); inp.value = '';
+  renderChips(); update();
+}
+function removeChip(v) { chips = chips.filter(c => c !== v); renderChips(); update(); }
+function renderChips() {
+  const wrap = document.getElementById('mech-wrap');
+  const inp = wrap.querySelector('input');
+  wrap.querySelectorAll('.chip').forEach(c => c.remove());
+  chips.forEach(v => {
+    const el = document.createElement('div'); el.className = 'chip';
+    el.innerHTML = `${v}<span class="x" onclick="removeChip('${v.replace(/'/g,"\\'").replace(/"/g,'\\"')}')">✕</span>`;
+    wrap.insertBefore(el, inp);
+  });
+}
+
+// ── IMAGES ──
+function triggerImg(slot) { document.getElementById('img-' + slot).click(); }
+function loadImg(e, slot) {
+  e.stopPropagation();
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    imgs[slot] = ev.target.result;
+    const s = document.getElementById('slot-' + slot);
+    s.classList.add('has-img');
+    s.querySelectorAll('.slot-ico,.slot-lbl').forEach(el => el.style.display = 'none');
+    let img = s.querySelector('img');
+    if (!img) { img = document.createElement('img'); s.insertBefore(img, s.querySelector('.rm-img')); }
+    img.src = ev.target.result;
+    update();
+  };
+  reader.readAsDataURL(file);
+}
+function removeImg(e, slot) {
+  e.stopPropagation(); imgs[slot] = null;
+  const s = document.getElementById('slot-' + slot);
+  s.classList.remove('has-img');
+  const img = s.querySelector('img'); if (img) img.remove();
+  s.querySelectorAll('.slot-ico,.slot-lbl').forEach(el => el.style.display = '');
+  update();
+}
+
+// ── COLOR ──
+function pickColor(el) {
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active'); accentColor = el.dataset.color; update();
+}
+
+// ── HELPERS ──
+function gv(id) { return document.getElementById(id).value.trim(); }
+function show(id, v) { document.getElementById(id).style.display = v ? '' : 'none'; }
+function stars(rating, size) {
+  return [1,2,3,4,5].map(n => `<span class="sstar ${n <= Math.round(rating) ? '' : 'empty'}" style="font-size:${size}px">★</span>`).join('');
+}
+
+// ── UPDATE PREVIEW ──
+function update() {
+  document.documentElement.style.setProperty('--red', accentColor);
+
+  const title = gv('f-title'), year = gv('f-year'), location = gv('f-location');
+  const players = gv('f-players'), time = gv('f-time'), age = gv('f-age');
+  const category = gv('f-category'), style = gv('f-style'), theme = gv('f-theme');
+  const desc = gv('f-desc'), designer = gv('f-designer'), publisher = gv('f-publisher');
+  const complexity = parseInt(document.getElementById('f-complexity').value);
+  const jRating = parseFloat(document.getElementById('f-james').value);
+  const aRating = parseFloat(document.getElementById('f-alysa').value);
+  const videoUrl = gv('f-video'), rulebookUrl = gv('f-rulebook'), bggUrl = gv('f-bgg');
+
+  document.getElementById('complexity-val').textContent = complexity;
+  document.getElementById('james-val').textContent = jRating > 0 ? jRating.toFixed(1) : '—';
+  document.getElementById('alysa-val').textContent = aRating > 0 ? aRating.toFixed(1) : '—';
+
+  // Title
+  const titleEl = document.getElementById('sh-title');
+  titleEl.textContent = title || 'Game Title';
+  titleEl.style.color = title ? '#F4EFE5' : '#444';
+  titleEl.style.fontSize = title.length > 22 ? '2rem' : title.length > 14 ? '2.6rem' : '3.2rem';
+
+  // Year subtitle below title
+  const yrSub = document.getElementById('sh-year-sub');
+  if (year) { yrSub.textContent = year; yrSub.style.display = ''; } else yrSub.style.display = 'none';
+
+  // Badges
+  const tb = document.getElementById('sh-type-badge');
+  if (gameType) { tb.textContent = gameType; tb.style.display = 'inline-block'; } else tb.style.display = 'none';
+  const sb = document.getElementById('sh-style-badge');
+  if (style) { sb.textContent = style; sb.style.display = 'inline-block'; } else sb.style.display = 'none';
+  const cb = document.getElementById('sh-cat-badge');
+  if (category) { cb.textContent = category; cb.style.display = 'inline-block'; } else cb.style.display = 'none';
+  const lb = document.getElementById('sh-loc-badge');
+  if (location) { lb.textContent = location; lb.style.display = 'inline-block'; } else lb.style.display = 'none';
+
+  // Meta
+  const meta = [];
+  if (players) meta.push(`👥 ${players}`);
+  if (time) meta.push(`⏱ ${time}`);
+  if (age) meta.push(`🎂 Age ${age}+`);
+  document.getElementById('sh-meta').innerHTML = meta.map(m => `<div class="sh-meta-item">${m}</div>`).join('');
+
+  // Description
+  const descEl = document.getElementById('sh-desc');
+  descEl.textContent = desc || 'Your description will appear here…';
+  descEl.className = desc ? '' : 'sh-desc-ph';
+
+  // Mechanisms
+  document.getElementById('sh-mechs').innerHTML = chips.map(c => `<span class="sh-tag">${c}</span>`).join('');
+
+  // Cover
+  const coverWrap = document.getElementById('sh-cover');
+  const oldImg = coverWrap.querySelector('img');
+  if (imgs.cover) {
+    if (!oldImg) { const i = document.createElement('img'); i.src = imgs.cover; coverWrap.prepend(i); }
+    else oldImg.src = imgs.cover;
+    const ph = coverWrap.querySelector('.sh-cover-ph'); if (ph) ph.style.display = 'none';
+  } else {
+    if (oldImg) oldImg.remove();
+    const ph = coverWrap.querySelector('.sh-cover-ph'); if (ph) ph.style.display = '';
+  }
+
+  // Gameplay photo
+  const photoWrap = document.getElementById('sh-photo');
+  if (imgs.gameplay) {
+    let gi = photoWrap.querySelector('img');
+    if (!gi) { gi = document.createElement('img'); photoWrap.innerHTML = ''; photoWrap.appendChild(gi); }
+    gi.src = imgs.gameplay;
+  } else {
+    photoWrap.innerHTML = '<div class="sh-photo-ph">Gameplay Photo</div>';
+  }
+
+  // Info rows — Theme, Complexity, Designer, Publisher
+  const rows = [];
+  if (theme) rows.push(['Theme', theme]);
+  rows.push(['Complexity', [1,2,3,4,5].map(n => `<span class="cpip ${n<=complexity?'on':''}"></span>`).join('') + ` <span style="font-size:0.78rem;color:#777">${complexity}/5</span>`]);
+  if (designer) rows.push(['Designer', designer]);
+  if (publisher) rows.push(['Publisher', publisher]);
+  const info = document.getElementById('sh-info');
+  if (rows.length) {
+    info.innerHTML = rows.map(([k,v]) => `<div class="sh-info-row"><span class="sh-info-key">${k}</span><span class="sh-info-val">${v}</span></div>`).join('');
+  } else {
+    info.innerHTML = '<div class="sh-info-row" style="color:#bbb;font-family:\'Barlow Condensed\',sans-serif;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase">Details appear here</div>';
+  }
+
+  // Ratings
+  const jEl = document.getElementById('sh-james-num');
+  document.getElementById('sh-james-stars').innerHTML = jRating > 0 ? stars(jRating, 20) : '';
+  jEl.textContent = jRating > 0 ? jRating.toFixed(1) : '—';
+  jEl.style.color = jRating > 0 ? '#222' : '#ccc';
+
+  const aEl = document.getElementById('sh-alysa-num');
+  document.getElementById('sh-alysa-stars').innerHTML = aRating > 0 ? stars(aRating, 20) : '';
+  aEl.textContent = aRating > 0 ? aRating.toFixed(1) : '—';
+  aEl.style.color = aRating > 0 ? '#222' : '#ccc';
+
+  // Overall
+  const both = [jRating, aRating].filter(r => r > 0);
+  const overall = both.length ? (both.reduce((a,b) => a+b, 0) / both.length) : 0;
+  document.getElementById('sh-overall-num').textContent = overall > 0 ? overall.toFixed(1) : '—';
+  document.getElementById('sh-overall-stars').innerHTML = overall > 0 ? stars(overall, 16) : '';
+
+  // Links
+  const vl = document.getElementById('sh-link-video');
+  if (videoUrl) { vl.href = videoUrl; vl.style.display = 'flex'; } else vl.style.display = 'none';
+  const rl = document.getElementById('sh-link-rules');
+  if (rulebookUrl) { rl.href = rulebookUrl; rl.style.display = 'flex'; } else rl.style.display = 'none';
+  const bl = document.getElementById('sh-link-bgg');
+  if (bggUrl) { bl.href = bggUrl; bl.style.display = 'flex'; } else bl.style.display = 'none';
+
+  // Footer — designer/publisher now in info box above; just show year
+  const dl = document.getElementById('sh-designer-line');
+  const pl = document.getElementById('sh-publisher-line');
+  dl.textContent = ''; dl.style.display = 'none';
+  pl.textContent = ''; pl.style.display = 'none';
+  const yr = document.getElementById('sh-year');
+  yr.style.display = 'none';
+
+  // chat game name
+  document.getElementById('chat-game-name').textContent = title || 'your game';
+}
+
+// ── PLAY LOG ──
+
+function logPlay() {
+  const date = document.getElementById('p-date').value;
+  const james = document.getElementById('p-james').checked;
+  const alysa = document.getElementById('p-alysa').checked;
+  if (!date) { showToast('Please pick a date'); return; }
+  if (!james && !alysa) { showToast('Select at least one player'); return; }
+  const play = {
+    id: Date.now(), date,
+    players: [james ? 'James' : null, alysa ? 'Alysa' : null].filter(Boolean),
+    jScore: james ? document.getElementById('p-james-score').value.trim() : null,
+    aScore: alysa ? document.getElementById('p-alysa-score').value.trim() : null,
+    winner: document.getElementById('p-winner').value,
+    notes: document.getElementById('p-notes').value.trim(),
+  };
+  plays.unshift(play);
+  savePlays(); renderPlays();
+  // reset
+  document.getElementById('p-james-score').value = '';
+  document.getElementById('p-alysa-score').value = '';
+  document.getElementById('p-winner').value = '';
+  document.getElementById('p-notes').value = '';
+  showToast('Play logged!');
+}
+
+function deletePlay(id) {
+  plays = plays.filter(p => p.id !== id);
+  savePlays(); renderPlays();
+}
+
+function renderPlays() {
+  const log = document.getElementById('play-log');
+  if (!plays.length) { log.innerHTML = '<div class="no-plays">No plays logged yet</div>'; return; }
+  log.innerHTML = plays.map(p => {
+    const scores = [];
+    if (p.jScore) scores.push(`James: ${p.jScore}`);
+    if (p.aScore) scores.push(`Alysa: ${p.aScore}`);
+    const dateStr = p.date ? new Date(p.date + 'T12:00:00').toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}) : '';
+    return `<div class="play-entry">
+      <div class="play-entry-left">
+        <div class="play-date">${dateStr}</div>
+        <div class="play-players">${p.players.join(' & ')}</div>
+        ${p.winner ? `<div class="play-winner">🏆 ${p.winner}</div>` : ''}
+        ${scores.length ? `<div class="play-scores">${scores.join(' · ')}</div>` : ''}
+        ${p.notes ? `<div class="play-scores" style="font-style:italic;color:#aaa">${p.notes}</div>` : ''}
+      </div>
+      <button class="play-delete" onclick="deletePlay(${p.id})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+async function savePlays() {
+  try { await window.storage.set('boardvault_plays_v1', JSON.stringify(plays)); } catch(e) {}
+}
+async function loadPlays() {
+  try { const r = await window.storage.get('boardvault_plays_v1'); if (r) { plays = JSON.parse(r.value); renderPlays(); } } catch(e) {}
+}
+
+// ── ASK CLAUDE ──
+async function sendChat() {
+  const inp = document.getElementById('chat-input');
+  const q = inp.value.trim(); if (!q) return;
+  inp.value = '';
+  const title = gv('f-title') || 'the game';
+  const desc = gv('f-desc');
+  const mechs = chips.join(', ');
+  appendMsg('user', q);
+  const loadId = appendMsg('ai', 'Thinking…', true);
+  try {
+    const systemPrompt = `You are a board game rules expert helping players of "${title}". ${desc ? `Game description: ${desc}` : ''} ${mechs ? `Mechanisms: ${mechs}` : ''} Answer rules questions clearly and concisely. If unsure, say so and recommend checking the rulebook.`;
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: q }]
+      })
+    });
+    const data = await resp.json();
+    const answer = data.content.map(c => c.text || '').join('');
+    updateMsg(loadId, answer);
+  } catch(err) {
+    updateMsg(loadId, 'Sorry, I couldn\'t connect. Please try again.');
+  }
+}
+
+function appendMsg(role, text, loading = false) {
+  const win = document.getElementById('chat-window');
+  const id = 'msg-' + Date.now();
+  const div = document.createElement('div');
+  div.className = `msg ${role}`; div.id = id;
+  const initials = role === 'user' ? 'ME' : 'BV';
+  div.innerHTML = `<div class="msg-avatar">${initials}</div><div class="msg-bubble${loading?' loading':''}">${text}</div>`;
+  win.appendChild(div);
+  win.scrollTop = win.scrollHeight;
+  return id;
+}
+function updateMsg(id, text) {
+  const el = document.getElementById(id);
+  if (el) { el.querySelector('.msg-bubble').textContent = text; el.querySelector('.msg-bubble').classList.remove('loading'); }
+  document.getElementById('chat-window').scrollTop = 99999;
+}
+
+// ── SAVE/LOAD ──
+function saveGame() {
+  const title = gv('f-title');
+  if (!title) { showToast('Please enter a game title first'); return; }
+  const game = {
+    id: Date.now(), title, year: gv('f-year'), location: gv('f-location'),
+    players: gv('f-players'), time: gv('f-time'), age: gv('f-age'),
+    category: gv('f-category'), style: gv('f-style'), theme: gv('f-theme'), gameType,
+    mechanisms: [...chips], description: gv('f-desc'),
+    complexity: parseInt(document.getElementById('f-complexity').value),
+    jRating: parseFloat(document.getElementById('f-james').value),
+    aRating: parseFloat(document.getElementById('f-alysa').value),
+    designer: gv('f-designer'), publisher: gv('f-publisher'),
+    videoUrl: gv('f-video'), rulebookUrl: gv('f-rulebook'), bggUrl: gv('f-bgg'),
+    accentColor, coverImage: imgs.cover, gameplayImage: imgs.gameplay,
+  };
+  window.storage.get('boardvault_games_v1')
+    .then(r => { const ex = r ? JSON.parse(r.value) : []; ex.unshift(game); return window.storage.set('boardvault_games_v1', JSON.stringify(ex)); })
+    .catch(() => window.storage.set('boardvault_games_v1', JSON.stringify([game])));
+  showToast(`"${title}" saved to your catalog!`);
+}
+
+function resetForm() {
+  if (!confirm('Clear all form fields?')) return;
+  ['f-title','f-year','f-location','f-players','f-time','f-age','f-category','f-style',
+   'f-theme','f-desc','f-designer','f-publisher','f-video','f-rulebook','f-bgg']
+    .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-complexity').value = 1;
+  document.getElementById('f-james').value = 0;
+  document.getElementById('f-alysa').value = 0;
+  chips = []; renderChips(); imgs = { cover: null, gameplay: null };
+  ['cover','gameplay'].forEach(s => removeImg({ stopPropagation:()=>{} }, s));
+  accentColor = '#CC1A1A'; gameType = '';
+  document.querySelectorAll('.swatch').forEach((sw,i) => sw.classList.toggle('active', i===0));
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  update();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── INIT ──
+window.addEventListener('load', () => {
+  // wire alysa checkbox
+  document.getElementById('p-alysa').addEventListener('change', function() {
+    document.getElementById('alysa-score-wrap').style.display = this.checked ? '' : 'none';
+  });
+
+  // set today's date in play log
+  document.getElementById('p-date').value = new Date().toISOString().split('T')[0];
+  loadPlays();
+  loadExpansions();
+
+  // prefill with 5-Minute Marvel
+  document.getElementById('f-title').value = '5-Minute Marvel';
+  document.getElementById('f-year').value = '2018';
+  document.getElementById('f-location').value = 'CAB-02';
+  document.getElementById('f-players').value = '2–5';
+  document.getElementById('f-time').value = '5 min';
+  document.getElementById('f-age').value = '8';
+  document.getElementById('f-category').value = 'Filler Card Game';
+  document.getElementById('f-style').value = 'Cooperative - Real-Time';
+  document.getElementById('f-theme').value = 'Superheroes';
+  document.getElementById('f-desc').value = 'In 5-Minute Marvel there are no turns — everyone plays simultaneously, slapping down cards whose symbols match the current villain card to defeat them. Crisis cards pop up to add chaos, potentially injuring heroes or forcing discards. The campaign runs through six progressively harder bosses, with Thanos as the final showdown.';
+  document.getElementById('f-complexity').value = 1;
+  document.getElementById('f-james').value = 3;
+  document.getElementById('f-alysa').value = 0;
+  document.getElementById('f-designer').value = 'Conner Reid';
+  document.getElementById('f-publisher').value = 'Spin Master';
+  chips = ['Variable Player Powers', 'Race the Clock', 'Boss Battles', 'App Integration'];
+  renderChips();
+  // set game type
+  const famBtn = document.querySelector('.type-btn[data-val="Family"]');
+  if (famBtn) { gameType = 'Family'; famBtn.classList.add('active'); }
+  update();
+});
+</script>
+</body>
+</html>
