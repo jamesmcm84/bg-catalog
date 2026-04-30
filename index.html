@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=0.5, maximum-scale=5.0">
 <title>BoardVault — Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,6 +25,12 @@ header {
 .logo em { color: var(--text); font-style: normal; }
 .header-right { display: flex; align-items: center; gap: 16px; }
 .header-count { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+.playlist-link {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; color: #888; text-decoration: none;
+  display: flex; align-items: center; gap: 6px; transition: color 0.15s;
+}
+.playlist-link:hover { color: var(--gold); }
 
 main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
 .section-title {
@@ -78,12 +86,6 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
 .card-rating span { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; color: var(--muted); }
 .loc-badge { position: absolute; top: 8px; right: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.58rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; background: var(--red); color: #fff; padding: 2px 7px; border-radius: 3px; }
 
-/* loading */
-.loading-grid { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 5rem 0; color: var(--muted); }
-.spinner { width: 36px; height: 36px; border: 3px solid #333; border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.loading-text { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; }
-
 .empty { text-align: center; padding: 5rem 2rem; color: #444; }
 .empty h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px; margin-bottom: 0.5rem; }
 
@@ -99,7 +101,7 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
 <header>
   <div><div class="logo">Board<em>Vault</em></div></div>
   <div class="header-right">
-    <a href="playlist.html" style="font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;display:flex;align-items:center;gap:6px" onmouseover="this.style.color='#F5A623'" onmouseout="this.style.color='#888'">📋 Playlists</a>
+    <a href="playlist.html" class="playlist-link">📋 Playlists</a>
     <div class="header-count" id="game-count"></div>
   </div>
 </header>
@@ -115,23 +117,19 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
     <button class="filter-btn" data-filter="Filler" onclick="setFilter('Filler',this)">Filler</button>
     <input type="text" class="search-input" placeholder="🔍 Search…" oninput="filterGames(this.value)">
   </div>
-  <div class="games-grid" id="games-grid">
-    <div class="loading-grid"><div class="spinner"></div><div class="loading-text">Loading collection…</div></div>
-  </div>
+  <div class="games-grid" id="games-grid"></div>
 </main>
 
 <script>
-const API = 'https://script.google.com/macros/s/AKfycbxWVpfpgVg2sbBH5PszE2hoNWL7ZBXh_TdIIBQFj-sJSL2cakGfgqBBHYIDElVwI5wr/exec';
 let allGames = [], currentFilter = 'all', searchQuery = '';
 
 async function loadGames() {
   try {
-    const res = await fetch(API + '?action=getGames');
-    const data = await res.json();
-    allGames = Array.isArray(data) ? data : [];
+    const res = await fetch('/games.json?v=' + Date.now());
+    allGames = await res.json();
     renderGames();
   } catch(e) {
-    document.getElementById('games-grid').innerHTML = '<div class="empty"><h2>Could not load</h2><p>Check your Apps Script is deployed and accessible.</p></div>';
+    document.getElementById('games-grid').innerHTML = '<div class="empty"><h2>Could not load</h2><p>Make sure games.json is in your Netlify folder.</p></div>';
   }
 }
 
@@ -145,12 +143,12 @@ function filterGames(q) { searchQuery = q.toLowerCase(); renderGames(); }
 function renderGames() {
   const grid = document.getElementById('games-grid');
   let filtered = allGames.filter(g => {
-    const matchFilter = currentFilter === 'all' || (g.GameType||'') === currentFilter;
+    const matchFilter = currentFilter === 'all' || (g.gameType||'') === currentFilter;
     const matchSearch = !searchQuery ||
-      (g.Title||'').toLowerCase().includes(searchQuery) ||
-      (g.Category||'').toLowerCase().includes(searchQuery) ||
-      (g.Style||'').toLowerCase().includes(searchQuery) ||
-      (g.Theme||'').toLowerCase().includes(searchQuery);
+      (g.title||'').toLowerCase().includes(searchQuery) ||
+      (g.category||'').toLowerCase().includes(searchQuery) ||
+      (g.style||'').toLowerCase().includes(searchQuery) ||
+      (g.theme||'').toLowerCase().includes(searchQuery);
     return matchFilter && matchSearch;
   });
 
@@ -162,37 +160,35 @@ function renderGames() {
   }
 
   grid.innerHTML = filtered.map(g => {
-    const jR = parseFloat(g.JRating) || 0;
-    const aR = parseFloat(g.ARating) || 0;
-    const both = [jR, aR].filter(r => r > 0);
-    const overall = both.length ? (both.reduce((a,b) => a+b,0) / both.length) : 0;
-    const complexity = parseInt(g.Complexity) || 1;
-    const accent = g.AccentColor || '#CC1A1A';
-    const slug = g.Slug || slugify(g.Title||'game');
-    const pips = [1,2,3,4,5].map(n => `<span class="cpip ${n<=complexity?'on':''}" style="${n<=complexity?'background:'+accent:''}"></span>`).join('');
+    const jR = parseFloat(g.jRating)||0, aR = parseFloat(g.aRating)||0;
+    const both = [jR,aR].filter(r=>r>0);
+    const overall = both.length ? (both.reduce((a,b)=>a+b,0)/both.length) : 0;
+    const complexity = parseInt(g.complexity)||1;
+    const accent = g.accentColor || '#CC1A1A';
+    const pips = [1,2,3,4,5].map(n=>`<span class="cpip ${n<=complexity?'on':''}" style="${n<=complexity?'background:'+accent:''}"></span>`).join('');
 
-    return `<a href="game.html?slug=${encodeURIComponent(slug)}" class="game-card">
+    return `<a href="game.html?slug=${encodeURIComponent(g.slug)}" class="game-card">
       <div class="card-header">
         <div class="card-cover">
-          ${g.CoverURL ? `<img src="${g.CoverURL}" alt="${g.Title}" onerror="this.parentElement.innerHTML='<div class=\'card-cover-ph\'>🎲</div>'">` : '<div class="card-cover-ph">🎲</div>'}
+          ${g.coverURL ? `<img src="${g.coverURL}" alt="${g.title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'card-cover-ph\'>🎲</div>'">` : '<div class="card-cover-ph">🎲</div>'}
         </div>
         <div class="card-title-block">
           <div class="card-badges">
-            ${g.GameType ? `<span class="badge badge-purple">${g.GameType}</span>` : ''}
-            ${g.Style ? `<span class="badge badge-teal">${g.Style}</span>` : ''}
-            ${g.Category ? `<span class="badge badge-gold">${g.Category}</span>` : ''}
+            ${g.gameType ? `<span class="badge badge-purple">${g.gameType}</span>` : ''}
+            ${g.style ? `<span class="badge badge-teal">${g.style}</span>` : ''}
+            ${g.category ? `<span class="badge badge-gold">${g.category}</span>` : ''}
           </div>
-          <div class="card-title">${g.Title||'Untitled'}</div>
+          <div class="card-title">${g.title||'Untitled'}</div>
           <div class="card-meta">
-            ${g.Players ? `<span class="card-meta-item">👥 ${g.Players}</span>` : ''}
-            ${g.Time ? `<span class="card-meta-item">⏱ ${g.Time}</span>` : ''}
-            ${g.Age ? `<span class="card-meta-item">🎂 ${g.Age}+</span>` : ''}
-            ${g.Year ? `<span class="card-meta-item">${g.Year}</span>` : ''}
+            ${g.players ? `<span class="card-meta-item">👥 ${g.players}</span>` : ''}
+            ${g.time ? `<span class="card-meta-item">⏱ ${g.time}</span>` : ''}
+            ${g.age ? `<span class="card-meta-item">🎂 ${g.age}+</span>` : ''}
+            ${g.year ? `<span class="card-meta-item">${g.year}</span>` : ''}
           </div>
         </div>
-        ${g.Location ? `<div class="loc-badge">${g.Location}</div>` : ''}
+        ${g.location ? `<div class="loc-badge">${g.location}</div>` : ''}
       </div>
-      <div class="card-body"><div class="card-desc">${g.Description||''}</div></div>
+      <div class="card-body"><div class="card-desc">${g.description||''}</div></div>
       <div class="card-footer">
         <div class="card-complexity">
           <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#666;margin-right:4px">Complexity</span>
@@ -203,8 +199,6 @@ function renderGames() {
     </a>`;
   }).join('');
 }
-
-function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
 
 loadGames();
 </script>
