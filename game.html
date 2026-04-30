@@ -167,6 +167,24 @@ header {
 .chat-send:hover { background: #333; }
 .chat-hint { background: #ECEAE0; padding: 0.4rem 1.3rem; font-family: 'Barlow Condensed', sans-serif; font-size: 0.62rem; letter-spacing: 1px; color: #aaa; }
 
+/* playlist bar */
+.sh-playlist-bar {
+  background: #ECEAE0; padding: 0.7rem 1.3rem;
+  display: flex; gap: 10px; flex-wrap: wrap;
+  border-bottom: 1px solid #D0CAB8;
+}
+.playlist-btn {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; border: none;
+  padding: 6px 16px; border-radius: 4px; cursor: pointer;
+  display: flex; align-items: center; gap: 6px; transition: all 0.15s;
+}
+.playlist-btn.james { background: #1A1A1A; color: #F4EFE5; }
+.playlist-btn.james:hover { background: #333; }
+.playlist-btn.alysa { background: #6A2FA0; color: #fff; }
+.playlist-btn.alysa:hover { background: #8B3FCC; }
+.playlist-btn-icon { font-size: 13px; }
+
 /* toast */
 .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: #252527; color: #F0EAE0; font-family: 'Barlow Condensed', sans-serif; font-size: 0.88rem; letter-spacing: 1px; padding: 10px 16px; border-radius: 8px; border-left: 3px solid #4CAF77; opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; z-index: 999; }
 .toast.show { opacity: 1; transform: translateY(0); }
@@ -314,28 +332,40 @@ function renderPage(g, plays, expansions) {
       <div class="sh-ratings">
         <div class="sh-rating-person">
           <span class="sh-rating-name">James</span>
-          <div class="sh-rating-stars">${jR>0?stars(jR,20):''}</div>
-          <span class="sh-rating-num" style="color:${jR>0?'#222':'#ccc'}">${jR>0?jR.toFixed(1):'—'}</span>
+          <div class="sh-rating-stars" id="james-stars">
+            ${[1,2,3,4,5].map(n=>`<span class="sstar ${n<=Math.round(jR)?'':'empty'}" style="font-size:20px;cursor:pointer" data-person="james" data-val="${n}" onclick="setRating('james',${n})" onmouseover="hoverRating('james',${n})" onmouseout="resetHover('james')">★</span>`).join('')}
+          </div>
+          <span class="sh-rating-num" id="james-num" style="color:${jR>0?'#222':'#ccc'}">${jR>0?jR.toFixed(1):'—'}</span>
         </div>
         <div class="sh-rating-person">
           <span class="sh-rating-name">Alysa</span>
-          <div class="sh-rating-stars">${aR>0?stars(aR,20):''}</div>
-          <span class="sh-rating-num" style="color:${aR>0?'#222':'#ccc'}">${aR>0?aR.toFixed(1):'—'}</span>
+          <div class="sh-rating-stars" id="alysa-stars">
+            ${[1,2,3,4,5].map(n=>`<span class="sstar ${n<=Math.round(aR)?'':'empty'}" style="font-size:20px;cursor:pointer" data-person="alysa" data-val="${n}" onclick="setRating('alysa',${n})" onmouseover="hoverRating('alysa',${n})" onmouseout="resetHover('alysa')">★</span>`).join('')}
+          </div>
+          <span class="sh-rating-num" id="alysa-num" style="color:${aR>0?'#222':'#ccc'}">${aR>0?aR.toFixed(1):'—'}</span>
         </div>
         <hr class="sh-rating-divider">
         <div class="sh-overall">
           <div>
             <div class="sh-overall-label">Overall</div>
-            <div class="sh-overall-stars">${overall>0?stars(overall,16):''}</div>
+            <div class="sh-overall-stars" id="overall-stars">${overall>0?stars(overall,16):''}</div>
           </div>
-          <div class="sh-overall-num">${overall>0?overall.toFixed(1):'—'}</div>
+          <div class="sh-overall-num" id="overall-num">${overall>0?overall.toFixed(1):'—'}</div>
         </div>
       </div>
     </div>
 
     ${linksHtml ? `<div class="sh-links">${linksHtml}</div>` : ''}
 
-    <div class="sh-footer">
+    <!-- PLAYLIST BUTTONS -->
+    <div class="sh-playlist-bar">
+      <button class="playlist-btn james" onclick="addToPlaylist('james')">
+        <span class="playlist-btn-icon">📋</span> Add to James' List
+      </button>
+      <button class="playlist-btn alysa" onclick="addToPlaylist('alysa')">
+        <span class="playlist-btn-icon">📋</span> Add to Alysa's List
+      </button>
+    </div>
       ${g.Designer ? `<div class="sh-designer">Designer: ${g.Designer}</div>` : ''}
       ${g.Publisher ? `<div class="sh-designer" style="color:#555">Publisher: ${g.Publisher}</div>` : ''}
     </div>
@@ -432,6 +462,7 @@ function renderPage(g, plays, expansions) {
   </div>`;
 
   renderPlays(plays);
+  initRatings(jR, aR);
   document.getElementById('p-date').value = new Date().toISOString().split('T')[0];
   document.getElementById('p-alysa').addEventListener('change', function() {
     document.getElementById('aswrap').style.display = this.checked ? '' : 'none';
@@ -536,6 +567,91 @@ async function saveExpansion() {
     showToast('Error saving expansion');
   }
   btn.textContent = '+ Add Expansion'; btn.classList.remove('saving');
+}
+
+// ── PLAYLIST ──
+async function addToPlaylist(person) {
+  const btn = document.querySelector(`.playlist-btn.${person}`);
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<span>Saving…</span>'; btn.disabled = true;
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'addToPlaylist',
+        person: person === 'james' ? 'James' : 'Alysa',
+        gameSlug: SLUG,
+        gameTitle: GAME?.Title || SLUG,
+        coverURL: GAME?.CoverURL || ''
+      })
+    });
+    const result = await res.json();
+    if (result.success === false) {
+      showToast(`Already on ${person === 'james' ? 'James' : 'Alysa'}'s list!`);
+    } else {
+      showToast(`Added to ${person === 'james' ? 'James' : 'Alysa'}'s playlist ✓`);
+    }
+  } catch(e) { showToast('Could not add to playlist'); }
+  btn.innerHTML = orig; btn.disabled = false;
+}
+
+// ── RATINGS ──
+let currentRatings = { james: 0, alysa: 0 };
+
+function initRatings(jR, aR) {
+  currentRatings.james = jR;
+  currentRatings.alysa = aR;
+}
+
+function hoverRating(person, val) {
+  document.querySelectorAll(`[data-person="${person}"]`).forEach(s => {
+    s.className = parseInt(s.dataset.val) <= val ? 'sstar' : 'sstar empty';
+  });
+}
+
+function resetHover(person) {
+  const current = currentRatings[person];
+  document.querySelectorAll(`[data-person="${person}"]`).forEach(s => {
+    s.className = parseInt(s.dataset.val) <= Math.round(current) ? 'sstar' : 'sstar empty';
+  });
+}
+
+async function setRating(person, val) {
+  // if clicking the same value, clear it
+  if (currentRatings[person] === val) val = 0;
+  currentRatings[person] = val;
+
+  // update stars
+  document.querySelectorAll(`[data-person="${person}"]`).forEach(s => {
+    s.className = parseInt(s.dataset.val) <= val ? 'sstar' : 'sstar empty';
+  });
+
+  // update number
+  const numEl = document.getElementById(person + '-num');
+  numEl.textContent = val > 0 ? val.toFixed(1) : '—';
+  numEl.style.color = val > 0 ? '#222' : '#ccc';
+
+  // update overall
+  const both = [currentRatings.james, currentRatings.alysa].filter(r => r > 0);
+  const overall = both.length ? both.reduce((a,b)=>a+b,0)/both.length : 0;
+  document.getElementById('overall-num').textContent = overall > 0 ? overall.toFixed(1) : '—';
+  document.getElementById('overall-stars').innerHTML = overall > 0 ? stars(overall, 16) : '';
+
+  // save to sheet
+  try {
+    await fetch(API, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'updateRating',
+        slug: SLUG,
+        person,
+        rating: val
+      })
+    });
+    showToast((person === 'james' ? 'James' : 'Alysa') + ' rating saved ✓');
+  } catch(e) {
+    showToast('Could not save rating');
+  }
 }
 
 // ── ASK CLAUDE ──
