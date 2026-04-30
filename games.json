@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "5-minute-marvel",
+    "title": "5-Minute Marvel",
+    "year": "2018",
+    "location": "CAB-02",
+    "players": "2-5",
+    "time": "5 min",
+    "age": "8",
+    "gameType": "Family",
+    "style": "Cooperative - Real-Time",
+    "category": "Filler Card Game",
+    "theme": "Superheroes",
+    "mechanisms": ["Variable Player Powers", "Race the Clock", "Boss Battles", "App Integration"],
+    "description": "In 5-Minute Marvel there are no turns — everyone plays simultaneously, slapping down cards whose symbols match the current villain card to defeat them. Crisis cards pop up to add chaos, potentially injuring heroes or forcing discards. The campaign runs through six progressively harder bosses, with Thanos as the final showdown.",
+    "complexity": 1,
+    "jRating": 3,
+    "aRating": 0,
+    "designer": "Conner Reid",
+    "publisher": "Spin Master",
+    "videoURL": "",
+    "rulebookURL": "",
+    "bggURL": "",
+    "coverURL": "/images/5-minute-marvel-cover.jpg",
+    "gameplayURL": "/images/5-minute-marvel-gameplay.jpg",
+    "accentColor": "#CC1A1A",
+    "expansions": []
+  }
+]
