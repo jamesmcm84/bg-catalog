@@ -242,7 +242,6 @@ async function init() {
         accentColor: g['Accent Color'] || g.AccentColor || g.accentColor || '#1A6ACC',
         expansions:  g.expansions || [],
       }));
-      localStorage.setItem(CACHE_KEY, JSON.stringify({ data: games, timestamp: Date.now() }));
       GAME = games.find(g => (g.slug||'').toLowerCase() === SLUG.toLowerCase());
     }
 
