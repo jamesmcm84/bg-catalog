@@ -1,4 +1,4 @@
-[
+
   {
     "slug": "5-minute-marvel",
     "title": "5-Minute Marvel",
@@ -21,8 +21,8 @@
     "videoURL": "",
     "rulebookURL": "",
     "bggURL": "",
-    "coverURL": "/images/5-minute-marvel-cover.jpg",
-    "gameplayURL": "/images/5-minute-marvel-gameplay.jpg",
+    "coverURL": "bg-catalog/images/5-minute-marvel-cover.jpg",
+    "gameplayURL": "bg-catalog/images/5-minute-marvel-gameplay.jpg",
     "accentColor": "#CC1A1A",
     "expansions": []
   }
