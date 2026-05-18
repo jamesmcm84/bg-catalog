@@ -187,13 +187,19 @@ header {
 <script>
 const API = 'https://script.google.com/macros/s/AKfycbxWVpfpgVg2sbBH5PszE2hoNWL7ZBXh_TdIIBQFj-sJSL2cakGfgqBBHYIDElVwI5wr/exec';
 const ANTHROPIC_KEY = 'YOUR-API-KEY-HERE';
+const IMG_BASE = 'https://jamesmcm84.github.io/bg-catalog';
 const params = new URLSearchParams(window.location.search);
 const SLUG = params.get('slug') || '';
 let GAME = null;
 let currentRatings = { james: 0, alysa: 0 };
 
+function resolveURL(raw) {
+  if (!raw) return '';
+  if (raw.startsWith('/')) return IMG_BASE + raw;
+  return raw;
+}
+
 async function init() {
-  // Load from cache first for instant display, then Google Sheets
   try {
     const CACHE_KEY = 'boardvault_games_cache';
     let games = null;
@@ -238,8 +244,8 @@ async function init() {
         videoURL:    g.videoURL || g.VideoURL || '',
         rulebookURL: g.RulebookURL || g.rulebookURL || '',
         bggURL:      g.BGGURL || g.bggURL || '',
-        coverURL:    g['Cover Photo'] || g.CoverURL || g.coverURL || '',
-        gameplayURL: g['Gameplay Photo'] || g.GameplayURL || g.gameplayURL || '',
+        coverURL:    resolveURL(g['Cover Photo'] || g.CoverURL || g.coverURL || ''),
+        gameplayURL: resolveURL(g['Gameplay Photo'] || g.GameplayURL || g.gameplayURL || ''),
         accentColor: g['Accent Color'] || g.AccentColor || g.accentColor || '#1A6ACC',
         expansions:  g.expansions || [],
       }));
@@ -298,7 +304,7 @@ function renderPage(g) {
     ${g.expansions.map(ex=>`
       <div class="sh-exp-item">
         <div class="sh-exp-cover">
-          ${ex.coverURL?`<img src="${ex.coverURL}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'sh-exp-cover-ph\'>📦</div>'">`:'<div class="sh-exp-cover-ph">📦</div>'}
+          ${ex.coverURL?`<img src="${resolveURL(ex.coverURL)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'sh-exp-cover-ph\'>📦</div>'">`:'<div class="sh-exp-cover-ph">📦</div>'}
         </div>
         <div class="sh-exp-body">
           <div class="sh-exp-name">${ex.name||''}</div>
@@ -446,7 +452,6 @@ function renderPage(g) {
   });
 }
 
-// ── RATINGS (saves to games.json via Netlify — needs Netlify Forms or just Google Sheets) ──
 function hoverRating(person, val) {
   document.querySelectorAll(`[data-person="${person}"]`).forEach(s => {
     s.className = 'sstar ' + (parseInt(s.dataset.val) <= val ? '' : 'empty');
@@ -466,7 +471,6 @@ async function setRating(person, val) {
   numEl.textContent = val > 0 ? val.toFixed(1) : '—';
   numEl.style.color = val > 0 ? '#222' : '#ccc';
   updateOverall();
-  // Save to Google Sheets
   try {
     await fetch(API, {
       method: 'POST',
@@ -482,7 +486,6 @@ function updateOverall() {
   document.getElementById('overall-stars').innerHTML = overall > 0 ? stars(overall, 16, false, '') : '';
 }
 
-// ── PLAYS ──
 async function loadPlays() {
   try {
     const res = await fetch(API + '?action=getPlays&slug=' + encodeURIComponent(SLUG));
@@ -543,7 +546,6 @@ async function logPlay() {
   btn.textContent = '+ Log Play'; btn.disabled = false;
 }
 
-// ── PLAYLIST ──
 async function addToPlaylist(person) {
   const btn = document.querySelector(`.playlist-btn.${person}`);
   const orig = btn.innerHTML;
@@ -565,7 +567,6 @@ async function addToPlaylist(person) {
   btn.innerHTML = orig; btn.disabled = false;
 }
 
-// ── TOGGLE ──
 function toggleSec(id, btn) {
   const el = document.getElementById(id); if (!el) return;
   const hidden = el.style.display === 'none';
@@ -573,7 +574,6 @@ function toggleSec(id, btn) {
   btn.textContent = hidden ? '▼' : '▶';
 }
 
-// ── ASK CLAUDE ──
 async function sendChat() {
   const inp = document.getElementById('chat-inp');
   const q = inp.value.trim(); if (!q) return;
