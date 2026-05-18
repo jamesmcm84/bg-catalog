@@ -193,18 +193,66 @@ let GAME = null;
 let currentRatings = { james: 0, alysa: 0 };
 
 async function init() {
-  // Load game data from local JSON — fast!
+  // Load from cache first for instant display, then Google Sheets
   try {
-    const res = await fetch('/games.json?v=' + Date.now());
-    const games = await res.json();
-    GAME = games.find(g => g.slug === SLUG);
+    const CACHE_KEY = 'boardvault_games_cache';
+    let games = null;
+
+    // Try cache first
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data } = JSON.parse(cached);
+        if (data && data.length) games = data;
+      }
+    } catch(e) {}
+
+    // Find game in cache
+    if (games) {
+      GAME = games.find(g => (g.slug||'').toLowerCase() === SLUG.toLowerCase());
+    }
+
+    // If not in cache, fetch from Google Sheets
+    if (!GAME) {
+      const res = await fetch(API + '?action=getGames');
+      const raw = await res.json();
+      games = (Array.isArray(raw) ? raw : []).map(g => ({
+        slug:        g.Slug || g.slug || '',
+        title:       g.Title || g.title || '',
+        year:        g.Year || g.year || '',
+        location:    g.Location || g.location || '',
+        players:     g['Player Count'] || g.Players || g.players || '',
+        time:        g.Duration || g.Time || g.time || '',
+        age:         g.Age || g.age || '',
+        gameType:    g['Game Type'] || g.GameType || g.gameType || '',
+        style:       g.Style || g.style || '',
+        category:    g.Category || g.category || '',
+        theme:       g.Theme || g.theme || '',
+        mechanisms:  g.Mechanisms || g.mechanisms || '',
+        description: g.Description || g.description || '',
+        complexity:  parseFloat(g.Complexity || g.complexity) || 1,
+        jRating:     parseFloat(g['James Ratimg'] || g.JRating || g.jRating) || 0,
+        aRating:     parseFloat(g['Alysa Rating'] || g.ARating || g.aRating) || 0,
+        designer:    g.Designer || g.designer || '',
+        publisher:   g.Publisher || g.publisher || '',
+        videoURL:    g.videoURL || g.VideoURL || '',
+        rulebookURL: g.RulebookURL || g.rulebookURL || '',
+        bggURL:      g.BGGURL || g.bggURL || '',
+        coverURL:    g['Cover Photo'] || g.CoverURL || g.coverURL || '',
+        gameplayURL: g['Gameplay Photo'] || g.GameplayURL || g.gameplayURL || '',
+        accentColor: g['Accent Color'] || g.AccentColor || g.accentColor || '#1A6ACC',
+        expansions:  g.expansions || [],
+      }));
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ data: games, timestamp: Date.now() }));
+      GAME = games.find(g => (g.slug||'').toLowerCase() === SLUG.toLowerCase());
+    }
+
     if (!GAME) {
       document.getElementById('page').innerHTML = '<div style="text-align:center;padding:4rem;color:#666"><h2 style="font-family:\'Bebas Neue\',sans-serif;font-size:2rem;letter-spacing:3px">Game Not Found</h2><p style="margin-top:8px"><a href="index.html" style="color:#F5A623">← Back to Collection</a></p></div>';
       return;
     }
     document.title = GAME.title + ' — BoardVault';
     renderPage(GAME);
-    // Load plays async after page renders — doesn't block display
     loadPlays();
   } catch(e) {
     document.getElementById('page').innerHTML = '<div style="text-align:center;padding:4rem;color:#666">Could not load game data.</div>';
