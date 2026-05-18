@@ -73,7 +73,7 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
 .badge-purple { background: #6A2FA0; color: #fff; }
 .badge-teal { background: #1A7A7A; color: #fff; }
 .badge-gold { background: var(--gold); color: #111; }
-.card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 1px; line-height: 1.1; color: #F4EFE5; margin: 4px 0; }
+.card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 1px; line-height: 1.1; color: #F4EFE5; margin: 4px 0; word-break: break-word; }
 .card-meta { display: flex; gap: 10px; flex-wrap: wrap; }
 .card-meta-item { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 600; color: #aaa; }
 .card-body { padding: 0.9rem 1rem; flex: 1; }
@@ -84,7 +84,7 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
 .cpip.on { background: var(--red); }
 .card-rating { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--gold); line-height: 1; }
 .card-rating span { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; color: var(--muted); }
-.loc-badge { position: absolute; bottom: 8px; right: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.58rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; background: var(--red); color: #fff; padding: 2px 7px; border-radius: 3px; }
+.loc-badge { position: absolute; bottom: 8px; right: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; background: var(--red); color: #fff; padding: 3px 9px; border-radius: 3px; }
 
 .empty { text-align: center; padding: 5rem 2rem; color: #444; }
 .empty h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px; margin-bottom: 0.5rem; }
@@ -246,8 +246,6 @@ function renderGames() {
         <div class="card-title-block">
           <div class="card-badges">
             ${g.gameType ? `<span class="badge badge-purple">${g.gameType}</span>` : ''}
-            ${g.style ? `<span class="badge badge-teal">${g.style}</span>` : ''}
-            ${g.category ? `<span class="badge badge-gold">${g.category}</span>` : ''}
           </div>
           <div class="card-title">${g.title||'Untitled'}</div>
           <div class="card-meta">
@@ -259,7 +257,10 @@ function renderGames() {
         </div>
         ${g.location ? `<div class="loc-badge">${g.location}</div>` : ''}
       </div>
-      <div class="card-body"><div class="card-desc">${cardDesc}</div></div>
+      <div class="card-body">
+        <div class="card-desc">${cardDesc}</div>
+        ${g.style ? `<div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap"><span class="badge badge-teal">${g.style}</span></div>` : ''}
+      </div>
       <div class="card-footer">
         <div class="card-complexity">
           <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#666;margin-right:4px">Complexity</span>
