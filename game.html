@@ -24,7 +24,6 @@ header {
 
 .page { max-width: 740px; margin: 0 auto; padding: 2rem 1rem 5rem; }
 
-/* ═══════ SHEET ═══════ */
 .sheet {
   background: #F4EFE5; border-radius: 5px; overflow: hidden;
   box-shadow: 0 20px 60px rgba(0,0,0,0.55), 0 4px 16px rgba(0,0,0,0.3);
@@ -32,8 +31,8 @@ header {
 }
 
 .sh-topbar { background: #111; display: flex; align-items: stretch; min-height: 200px; }
-.sh-cover { width: 190px; flex-shrink: 0; overflow: hidden; background: #222; }
-.sh-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sh-cover { width: 190px; flex-shrink: 0; overflow: hidden; background: #222; display: flex; align-items: center; justify-content: center; }
+.sh-cover img { width: 100%; height: 100%; object-fit: contain; display: block; background: #222; }
 .sh-cover-ph { width: 100%; min-height: 200px; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
 .sh-title-block { flex: 1; padding: 0.9rem 1.1rem; display: flex; flex-direction: column; justify-content: space-between; }
 .sh-badges-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: space-between; }
@@ -95,7 +94,6 @@ header {
 .sh-footer { background: #1A1A1A; padding: 0.6rem 1.3rem; }
 .sh-designer { font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; letter-spacing: 1px; color: #666; }
 
-/* expansions */
 .sh-exp-header { background: #1A1A1A; padding: 0.6rem 1.3rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: #F4EFE5; border-top: 2px solid #D0CAB8; }
 .sh-exp-item { display: grid; grid-template-columns: 90px 1fr; border-bottom: 1px solid #D0CAB8; }
 .sh-exp-item:last-child { border-bottom: none; }
@@ -109,7 +107,6 @@ header {
 .sh-exp-link { font-family: 'Barlow Condensed', sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; padding: 2px 8px; border-radius: 3px; border: 1px solid #C8C0B0; color: #555; background: #fff; }
 .sh-exp-link.bgg { background: #E8622A; border-color: #E8622A; color: #fff; }
 
-/* card sections */
 .card-section { background: #ECEAE0; border-top: 2px solid #D0CAB8; }
 .card-section-header { display: flex; align-items: center; gap: 8px; padding: 0.7rem 1.3rem; background: #1A1A1A; }
 .card-section-icon { font-size: 14px; }
@@ -117,7 +114,6 @@ header {
 .toggle-btn { background: none; border: none; color: #888; cursor: pointer; font-size: 12px; padding: 2px 6px; }
 .toggle-btn:hover { color: var(--gold); }
 
-/* play log */
 .play-form { padding: 0.9rem 1.3rem; background: #F4EFE5; border-bottom: 1px solid #D0CAB8; display: flex; flex-direction: column; gap: 10px; }
 .play-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
 .pf { display: flex; flex-direction: column; gap: 3px; }
@@ -141,7 +137,6 @@ header {
 .no-plays { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: #bbb; text-align: center; padding: 1rem 0; }
 .plays-loading { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: #bbb; text-align: center; padding: 1rem 0; }
 
-/* chat */
 .chat-win { background: #F4EFE5; padding: 0.9rem 1.3rem; display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; border-bottom: 1px solid #D0CAB8; }
 .msg { display: flex; gap: 8px; align-items: flex-start; }
 .msg.user { flex-direction: row-reverse; }
@@ -204,7 +199,6 @@ async function init() {
     const CACHE_KEY = 'boardvault_games_cache';
     let games = null;
 
-    // Try cache first
     try {
       const cached = localStorage.getItem(CACHE_KEY);
       if (cached) {
@@ -213,12 +207,10 @@ async function init() {
       }
     } catch(e) {}
 
-    // Find game in cache
     if (games) {
       GAME = games.find(g => (g.slug||'').toLowerCase() === SLUG.toLowerCase());
     }
 
-    // If not in cache, fetch from Google Sheets
     if (!GAME) {
       const res = await fetch(API + '?action=getGames');
       const raw = await res.json();
@@ -236,6 +228,7 @@ async function init() {
         theme:       g.Theme || g.theme || '',
         mechanisms:  g.Mechanisms || g.mechanisms || '',
         description: g.Description || g.description || '',
+        blurb:       g.Blurb || g.blurb || '',
         complexity:  parseFloat(g.Complexity || g.complexity) || 1,
         jRating:     parseFloat(g['James Ratimg'] || g.JRating || g.jRating) || 0,
         aRating:     parseFloat(g['Alysa Rating'] || g.ARating || g.aRating) || 0,
