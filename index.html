@@ -125,7 +125,14 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
 const API = 'https://script.google.com/macros/s/AKfycbxWVpfpgVg2sbBH5PszE2hoNWL7ZBXh_TdIIBQFj-sJSL2cakGfgqBBHYIDElVwI5wr/exec';
 const CACHE_KEY = 'boardvault_games_cache';
 const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+const IMG_BASE = 'https://jamesmcm84.github.io/bg-catalog';
 let allGames = [], currentFilter = 'all', searchQuery = '';
+
+function resolveURL(raw) {
+  if (!raw) return '';
+  if (raw.startsWith('/')) return IMG_BASE + raw;
+  return raw;
+}
 
 async function loadGames() {
   // Show cached data instantly if available
@@ -177,8 +184,8 @@ async function fetchAndCache(silent) {
       videoURL:    g.videoURL || g.VideoURL || '',
       rulebookURL: g.RulebookURL || g.rulebookURL || '',
       bggURL:      g.BGGURL || g.bggURL || '',
-      coverURL:    g['Cover Photo'] || g.CoverURL || g.coverURL || '',
-      gameplayURL: g['Gameplay Photo'] || g.GameplayURL || g.gameplayURL || '',
+      coverURL:    resolveURL(g['Cover Photo'] || g.CoverURL || g.coverURL || ''),
+      gameplayURL: resolveURL(g['Gameplay Photo'] || g.GameplayURL || g.gameplayURL || ''),
       accentColor: g['Accent Color'] || g.AccentColor || g.accentColor || '#1A6ACC',
     })).filter(g => g.title);
 
