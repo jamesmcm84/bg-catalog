@@ -258,7 +258,7 @@ async function init() {
 }
 
 function stars(r, sz, interactive, person) {
-  return [1,2,3,4,5].map(n => {
+  return [1,2,3,4,5,6,7,8,9,10].map(n => {
     const filled = n <= Math.round(r);
     if (interactive) {
       return `<span class="sstar ${filled?'':'empty'}" style="font-size:${sz}px" data-person="${person}" data-val="${n}" onclick="setRating('${person}',${n})" onmouseover="hoverRating('${person}',${n})" onmouseout="resetHover('${person}')">★</span>`;
@@ -351,21 +351,21 @@ function renderPage(g) {
       <div class="sh-ratings">
         <div class="sh-rating-person">
           <span class="sh-rating-name">James</span>
-          <div class="sh-rating-stars" id="james-stars">${stars(jR,20,true,'james')}</div>
-          <span class="sh-rating-num" id="james-num" style="color:${jR>0?'#222':'#ccc'}">${jR>0?jR.toFixed(1):'—'}</span>
+          <div class="sh-rating-stars" id="james-stars">${stars(jR,14,true,'james')}</div>
+          <span class="sh-rating-num" id="james-num" style="color:${jR>0?'#222':'#ccc'}">${jR>0?jR.toFixed(0):'—'}<span style="font-size:1rem;color:#aaa">/10</span></span>
         </div>
         <div class="sh-rating-person">
           <span class="sh-rating-name">Alysa</span>
-          <div class="sh-rating-stars" id="alysa-stars">${stars(aR,20,true,'alysa')}</div>
-          <span class="sh-rating-num" id="alysa-num" style="color:${aR>0?'#222':'#ccc'}">${aR>0?aR.toFixed(1):'—'}</span>
+          <div class="sh-rating-stars" id="alysa-stars">${stars(aR,14,true,'alysa')}</div>
+          <span class="sh-rating-num" id="alysa-num" style="color:${aR>0?'#222':'#ccc'}">${aR>0?aR.toFixed(0):'—'}<span style="font-size:1rem;color:#aaa">/10</span></span>
         </div>
         <hr class="sh-rating-divider">
         <div class="sh-overall">
           <div>
             <div class="sh-overall-label">Overall</div>
-            <div class="sh-overall-stars" id="overall-stars">${overall>0?stars(overall,16,false,''):''}</div>
+            <div class="sh-overall-stars" id="overall-stars">${overall>0?stars(overall,12,false,''):''}</div>
           </div>
-          <div class="sh-overall-num" id="overall-num">${overall>0?overall.toFixed(1):'—'}</div>
+          <div class="sh-overall-num" id="overall-num">${overall>0?overall.toFixed(1)+'<span style="font-size:1rem;color:#666">/10</span>':'—'}</div>
         </div>
       </div>
     </div>
@@ -460,7 +460,7 @@ async function setRating(person, val) {
   currentRatings[person] = val;
   resetHover(person);
   const numEl = document.getElementById(person + '-num');
-  numEl.textContent = val > 0 ? val.toFixed(1) : '—';
+  numEl.innerHTML = val > 0 ? `${val}<span style="font-size:1rem;color:#aaa">/10</span>` : '—';
   numEl.style.color = val > 0 ? '#222' : '#ccc';
   updateOverall();
   try {
@@ -474,8 +474,8 @@ async function setRating(person, val) {
 function updateOverall() {
   const both = [currentRatings.james, currentRatings.alysa].filter(r => r > 0);
   const overall = both.length ? both.reduce((a,b)=>a+b,0)/both.length : 0;
-  document.getElementById('overall-num').textContent = overall > 0 ? overall.toFixed(1) : '—';
-  document.getElementById('overall-stars').innerHTML = overall > 0 ? stars(overall, 16, false, '') : '';
+  document.getElementById('overall-num').innerHTML = overall > 0 ? `${overall.toFixed(1)}<span style="font-size:1rem;color:#666">/10</span>` : '—';
+  document.getElementById('overall-stars').innerHTML = overall > 0 ? stars(overall, 12, false, '') : '';
 }
 
 async function loadPlays() {
