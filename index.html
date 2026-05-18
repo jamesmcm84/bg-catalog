@@ -64,8 +64,8 @@ main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
 }
 .game-card:hover { transform: translateY(-4px); border-color: var(--gold-dk); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
 .card-header { display: flex; align-items: stretch; min-height: 130px; background: #1A1A1A; position: relative; }
-.card-cover { width: 110px; flex-shrink: 0; overflow: hidden; background: #222; }
-.card-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-cover { width: 110px; height: 130px; flex-shrink: 0; overflow: hidden; background: #222; display: flex; align-items: center; justify-content: center; }
+.card-cover img { width: 100%; height: 100%; object-fit: contain; display: block; background: #222; }
 .card-cover-ph { width: 100%; height: 100%; min-height: 130px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
 .card-title-block { flex: 1; padding: 0.8rem 1rem; display: flex; flex-direction: column; justify-content: space-between; }
 .card-badges { display: flex; gap: 5px; flex-wrap: wrap; }
