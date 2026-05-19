@@ -348,7 +348,10 @@ function renderPage(g) {
   const pipsHtml = [1,2,3,4,5].map(n=>`<span class="cpip ${n<=complexity?'on':''}" style="${n<=complexity?'background:'+accent:''}"></span>`).join('');
 
   const infoRows = [
+    g.theme ? `<div class="sh-info-row"><span class="sh-info-key">Theme</span><span class="sh-info-val">${g.theme}</span></div>` : '',
     `<div class="sh-info-row"><span class="sh-info-key">Complexity</span><span class="sh-info-val">${pipsHtml} <span style="font-size:0.78rem;color:#777">${complexity}/5</span></span></div>`,
+    g.designer ? `<div class="sh-info-row"><span class="sh-info-key">Designer</span><span class="sh-info-val">${g.designer}</span></div>` : '',
+    g.publisher ? `<div class="sh-info-row"><span class="sh-info-key">Publisher</span><span class="sh-info-val">${g.publisher}</span></div>` : '',
   ].filter(Boolean).join('');
 
   const linksHtml = [
@@ -369,12 +372,6 @@ function renderPage(g) {
           ${g.category?`<span class="sh-badge sh-badge-gold">${g.category}</span>`:''}
         </div>
         <div class="sh-title" style="font-size:${(g.title||'').length>22?'2rem':(g.title||'').length>14?'2.6rem':'3.2rem'}">${g.title||''}</div>
-        <div class="sh-sub-info">
-          ${g.theme?`<span class="sh-sub-info-item"><strong>Theme</strong> ${g.theme}</span>`:''}
-          <span class="sh-sub-info-item"><strong>Complexity</strong> ${complexity}/5</span>
-          ${g.designer?`<span class="sh-sub-info-item"><strong>Designer</strong> ${g.designer}</span>`:''}
-          ${g.publisher?`<span class="sh-sub-info-item"><strong>Publisher</strong> ${g.publisher}</span>`:''}
-        </div>
         <div class="sh-meta-row">
           <div class="sh-meta">
             ${g.players?`<span class="sh-meta-item">👥 ${g.players}</span>`:''}
@@ -387,7 +384,7 @@ function renderPage(g) {
       ${g.location?`<div class="sh-location">${g.location}</div>`:''}
     </div>
 
-    ${g.style?`<div style="background:#1A7A7A;padding:0.4rem 1.3rem;display:flex;gap:6px;flex-wrap:wrap"><span style="font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#fff">${g.style}</span></div>`:''}
+    ${g.style ? `<div style="background:#111;padding:0.4rem 1.3rem;display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid #333">${g.style.split(',').map(s=>s.trim()).filter(Boolean).map(s=>`<span class="sh-badge sh-badge-teal">${s}</span>`).join('')}</div>` : ''}
 
     <div class="sh-mid">
       <div class="sh-desc">
