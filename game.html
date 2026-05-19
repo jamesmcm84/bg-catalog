@@ -35,19 +35,17 @@ header {
 .sh-cover { width: 190px; flex-shrink: 0; overflow: hidden; background: #222; display: flex; align-items: center; justify-content: center; max-height: 300px; }
 .sh-cover img { width: 100%; height: 100%; max-height: 300px; object-fit: contain; display: block; background: #222; }
 .sh-cover-ph { width: 100%; min-height: 200px; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
-.sh-title-block { flex: 1; padding: 0.45rem 0.55rem; display: flex; flex-direction: column; justify-content: flex-start; gap: 4px; }
+.sh-title-block { flex: 1; padding: 0.55rem 0.7rem; display: flex; flex-direction: column; justify-content: space-between; }
 .sh-badges-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .sh-badge { font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; white-space: nowrap; }
 .sh-badge-gold { background: #F5A623; color: #111; }
 .sh-badge-teal { background: #1A7A7A; color: #fff; }
 .sh-badge-purple { background: #6A2FA0; color: #fff; }
-.sh-badge-red { background: var(--red); color: #fff; font-size: 0.65rem; padding: 3px 9px; }
+.sh-badge-red { background: var(--red); color: #fff; }
 .sh-location { position: absolute; top: 8px; right: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; background: var(--red); color: #fff; padding: 3px 9px; border-radius: 3px; }
-.sh-title { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; letter-spacing: 1px; line-height: 1; color: #F4EFE5; display: block; word-break: break-word; margin-top: 2px; }
-.sh-sub-info { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 4px; }
-.sh-sub-info-item { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 600; color: #888; }
-.sh-sub-info-item strong { color: #aaa; font-weight: 700; }
-.sh-meta-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px; margin-top: auto; padding-top: 6px; }
+.sh-title { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; letter-spacing: 1px; line-height: 1; color: #F4EFE5; display: block; word-break: break-word; margin: 3px 0; }
+.sh-style-bubbles { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 4px; }
+.sh-meta-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
 .sh-meta { display: flex; gap: 10px; flex-wrap: wrap; }
 .sh-meta-item { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 600; color: #bbb; }
 .sh-year { font-family: 'Barlow Condensed', sans-serif; font-size: 0.95rem; font-weight: 700; letter-spacing: 2px; color: #fff; white-space: nowrap; }
@@ -55,7 +53,6 @@ header {
 /* mid */
 .sh-mid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #D0CAB8; }
 .sh-desc { padding: 1.1rem 1.3rem; border-right: 1px solid #D0CAB8; }
-.sh-style-row { margin-bottom: 7px; display: flex; gap: 5px; flex-wrap: wrap; }
 .sh-desc p { font-size: 0.86rem; line-height: 1.65; color: #333; }
 .sh-mech-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }
 .sh-tag { font-family: 'Barlow Condensed', sans-serif; font-size: 0.63rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; background: #E0D8CC; color: #555; border: 1px solid #CBC3B5; }
@@ -66,11 +63,11 @@ header {
 /* bottom info+ratings */
 .sh-bottom { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #D0CAB8; }
 .sh-info { padding: 1rem 1.3rem; border-right: 1px solid #D0CAB8; }
-.sh-info-row { display: flex; font-size: 0.8rem; line-height: 1.4; border-bottom: 1px dotted #D0CAB8; padding: 4px 0; gap: 5px; }
+.sh-info-row { display: flex; font-size: 0.92rem; line-height: 1.4; border-bottom: 1px dotted #D0CAB8; padding: 6px 0; gap: 5px; }
 .sh-info-row:last-child { border-bottom: none; }
-.sh-info-key { font-weight: 700; color: #333; min-width: 105px; flex-shrink: 0; }
-.sh-info-val { color: #555; }
-.cpip { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: #CCC; margin-right: 2px; }
+.sh-info-key { font-weight: 700; color: #333; min-width: 105px; flex-shrink: 0; font-size: 0.92rem; }
+.sh-info-val { color: #555; font-size: 0.92rem; }
+.cpip { display: inline-block; width: 11px; height: 11px; border-radius: 2px; background: #CCC; margin-right: 2px; }
 .cpip.on { background: var(--red); }
 
 .sh-ratings { padding: 1rem 1.3rem; display: flex; flex-direction: column; gap: 12px; }
@@ -101,9 +98,32 @@ header {
 .playlist-btn.alysa { background: #6A2FA0; color: #fff; }
 .playlist-btn.alysa:hover { background: #8B3FCC; }
 
-/* footer */
-.sh-footer { background: #1A1A1A; padding: 0.6rem 1.3rem; }
-.sh-designer { font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; letter-spacing: 1px; color: #666; }
+/* notes + tags tabs */
+.sh-tabs { border-bottom: 1px solid #D0CAB8; }
+.sh-tab-bar { display: flex; background: #E8E3D8; border-bottom: 1px solid #D0CAB8; }
+.sh-tab-btn { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 8px 18px; border: none; background: transparent; color: #888; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }
+.sh-tab-btn.active { color: #1A1A1A; border-bottom-color: var(--gold); background: #F4EFE5; }
+.sh-tab-panel { display: none; padding: 1rem 1.3rem; background: #F4EFE5; }
+.sh-tab-panel.active { display: block; }
+
+/* notes */
+.notes-area { width: 100%; min-height: 80px; font-family: 'Barlow', sans-serif; font-size: 0.86rem; color: #333; background: #fff; border: 1px solid #C8C0B0; border-radius: 4px; padding: 8px 10px; outline: none; resize: vertical; line-height: 1.5; }
+.notes-area:focus { border-color: #888; }
+.notes-save-btn { margin-top: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; background: #1A1A1A; color: #F4EFE5; border: none; padding: 6px 16px; border-radius: 4px; cursor: pointer; }
+.notes-save-btn:hover { background: #333; }
+
+/* tags */
+.tag-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; min-height: 28px; }
+.tag-chip { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; background: #2E2E30; color: #F0EAE0; padding: 3px 10px; border-radius: 20px; display: flex; align-items: center; gap: 5px; }
+.tag-chip-remove { cursor: pointer; color: #888; font-size: 0.9rem; line-height: 1; }
+.tag-chip-remove:hover { color: var(--red); }
+.tag-input-row { display: flex; gap: 6px; }
+.tag-input { flex: 1; font-family: 'Barlow', sans-serif; font-size: 0.86rem; color: #333; background: #fff; border: 1px solid #C8C0B0; border-radius: 4px; padding: 6px 10px; outline: none; }
+.tag-input:focus { border-color: #888; }
+.tag-add-btn { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; background: #1A1A1A; color: #F4EFE5; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; }
+.tag-add-btn:hover { background: #333; }
+.tag-page-link { display: inline-block; margin-top: 10px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #888; text-decoration: none; }
+.tag-page-link:hover { color: #555; }
 
 /* expansions section */
 .sh-exp-section { background: #F4EFE5; border-top: 1px solid #D0CAB8; }
@@ -142,7 +162,6 @@ header {
 .pchk label { display: flex; align-items: center; gap: 4px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: #555; cursor: pointer; }
 .card-log-btn { background: #1A1A1A; color: #F4EFE5; font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; border: none; padding: 7px 16px; border-radius: 4px; cursor: pointer; transition: background 0.15s; }
 .card-log-btn:hover { background: #333; }
-
 .play-history { padding: 0.8rem 1.3rem; background: #F4EFE5; display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; }
 .play-entry { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid #D8D0C4; border-radius: 5px; padding: 0.6rem 0.9rem; gap: 10px; }
 .pe-left { display: flex; flex-direction: column; gap: 2px; }
@@ -205,6 +224,7 @@ const params = new URLSearchParams(window.location.search);
 const SLUG = params.get('slug') || '';
 let GAME = null;
 let EXPANSIONS = [];
+let currentTags = [];
 let currentRatings = { james: 0, alysa: 0 };
 
 function resolveURL(raw) {
@@ -218,7 +238,6 @@ async function init() {
   try {
     const CACHE_KEY = 'boardvault_games_cache';
     let games = null;
-
     try {
       const cached = localStorage.getItem(CACHE_KEY);
       if (cached) {
@@ -227,9 +246,7 @@ async function init() {
       }
     } catch(e) {}
 
-    if (games) {
-      GAME = games.find(g => (g.slug||'').toLowerCase() === SLUG.toLowerCase());
-    }
+    if (games) GAME = games.find(g => (g.slug||'').toLowerCase() === SLUG.toLowerCase());
 
     if (!GAME) {
       const res = await fetch(API + '?action=getGames');
@@ -260,6 +277,8 @@ async function init() {
         coverURL:    resolveURL(g['Cover Photo'] || g.CoverURL || g.coverURL || ''),
         gameplayURL: resolveURL(g['Gameplay Photo'] || g.GameplayURL || g.gameplayURL || ''),
         accentColor: g['Accent Color'] || g.AccentColor || g.accentColor || '#1A6ACC',
+        notes:       g.Notes || g.notes || '',
+        tags:        g.Tags || g.tags || '',
       }));
       GAME = games.find(g => (g.slug||'').toLowerCase() === SLUG.toLowerCase());
     }
@@ -269,7 +288,7 @@ async function init() {
       return;
     }
 
-    // Fetch expansions in parallel with page render
+    currentTags = GAME.tags ? GAME.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
     document.title = GAME.title + ' — BoardVault';
     renderPage(GAME);
     loadPlays();
@@ -284,20 +303,14 @@ async function loadExpansions() {
     const res = await fetch(API + '?action=getExpansions&slug=' + encodeURIComponent(SLUG));
     EXPANSIONS = await res.json();
     renderExpansions();
-    // Also update play log expansion checkboxes
     renderExpansionCheckboxes();
-  } catch(e) {
-    EXPANSIONS = [];
-  }
+  } catch(e) { EXPANSIONS = []; }
 }
 
 function renderExpansions() {
   const el = document.getElementById('exp-grid');
   if (!el) return;
-  if (!EXPANSIONS.length) {
-    el.innerHTML = '<div class="sh-exp-empty">No expansions on record</div>';
-    return;
-  }
+  if (!EXPANSIONS.length) { el.innerHTML = '<div class="sh-exp-empty">No expansions on record</div>'; return; }
   el.innerHTML = EXPANSIONS.map(ex => `
     <div class="sh-exp-item">
       <div class="sh-exp-cover">
@@ -317,13 +330,12 @@ function renderExpansionCheckboxes() {
   if (!el) return;
   if (!EXPANSIONS.length) { el.style.display = 'none'; return; }
   el.style.display = '';
-  el.innerHTML = `
-    <div class="pf">
-      <label>Expansions Played</label>
-      <div class="pchk" style="flex-direction:column;gap:5px;margin-top:6px">
-        ${EXPANSIONS.map((ex, i) => `<label><input type="checkbox" name="exp" value="${ex.name}"> ${ex.name}</label>`).join('')}
-      </div>
-    </div>`;
+  el.innerHTML = `<div class="pf">
+    <label>Expansions Played</label>
+    <div class="pchk" style="flex-direction:column;gap:5px;margin-top:6px">
+      ${EXPANSIONS.map(ex => `<label><input type="checkbox" name="exp" value="${ex.name}"> ${ex.name}</label>`).join('')}
+    </div>
+  </div>`;
 }
 
 function stars(r, sz, interactive, person) {
@@ -336,6 +348,53 @@ function stars(r, sz, interactive, person) {
   }).join('');
 }
 
+function renderTags() {
+  const el = document.getElementById('tag-chips');
+  if (!el) return;
+  el.innerHTML = currentTags.map((t, i) => `
+    <span class="tag-chip">${t}<span class="tag-chip-remove" onclick="removeTag(${i})">✕</span></span>`).join('');
+}
+
+function removeTag(i) {
+  currentTags.splice(i, 1);
+  renderTags();
+}
+
+function addTag() {
+  const inp = document.getElementById('tag-input');
+  const val = inp.value.trim();
+  if (!val) return;
+  if (!currentTags.includes(val)) currentTags.push(val);
+  inp.value = '';
+  renderTags();
+}
+
+async function saveTags() {
+  try {
+    await fetch(API, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'saveTags', slug: SLUG, tags: currentTags.join(', ') })
+    });
+    showToast('Tags saved ✓');
+  } catch(e) { showToast('Could not save tags'); }
+}
+
+async function saveNote() {
+  const note = document.getElementById('notes-area').value;
+  try {
+    await fetch(API, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'saveNote', slug: SLUG, note })
+    });
+    showToast('Note saved ✓');
+  } catch(e) { showToast('Could not save note'); }
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.sh-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.sh-tab-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === tab));
+}
+
 function renderPage(g) {
   const jR = parseFloat(g.jRating)||0, aR = parseFloat(g.aRating)||0;
   currentRatings = { james: jR, alysa: aR };
@@ -344,12 +403,13 @@ function renderPage(g) {
   const complexity = parseInt(g.complexity)||1;
   const accent = g.accentColor || '#CC1A1A';
   const mechs = Array.isArray(g.mechanisms) ? g.mechanisms : (g.mechanisms||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const styles = g.style ? g.style.split(',').map(s=>s.trim()).filter(Boolean) : [];
 
   const pipsHtml = [1,2,3,4,5].map(n=>`<span class="cpip ${n<=complexity?'on':''}" style="${n<=complexity?'background:'+accent:''}"></span>`).join('');
 
   const infoRows = [
     g.theme ? `<div class="sh-info-row"><span class="sh-info-key">Theme</span><span class="sh-info-val">${g.theme}</span></div>` : '',
-    `<div class="sh-info-row"><span class="sh-info-key">Complexity</span><span class="sh-info-val">${pipsHtml} <span style="font-size:0.78rem;color:#777">${complexity}/5</span></span></div>`,
+    `<div class="sh-info-row"><span class="sh-info-key">Complexity</span><span class="sh-info-val">${pipsHtml} <span style="font-size:0.85rem;color:#777">${complexity}/5</span></span></div>`,
     g.designer ? `<div class="sh-info-row"><span class="sh-info-key">Designer</span><span class="sh-info-val">${g.designer}</span></div>` : '',
     g.publisher ? `<div class="sh-info-row"><span class="sh-info-key">Publisher</span><span class="sh-info-val">${g.publisher}</span></div>` : '',
   ].filter(Boolean).join('');
@@ -372,6 +432,7 @@ function renderPage(g) {
           ${g.category?`<span class="sh-badge sh-badge-gold">${g.category}</span>`:''}
         </div>
         <div class="sh-title" style="font-size:${(g.title||'').length>22?'2rem':(g.title||'').length>14?'2.6rem':'3.2rem'}">${g.title||''}</div>
+        ${styles.length ? `<div class="sh-style-bubbles">${styles.map(s=>`<span class="sh-badge sh-badge-teal">${s}</span>`).join('')}</div>` : ''}
         <div class="sh-meta-row">
           <div class="sh-meta">
             ${g.players?`<span class="sh-meta-item">👥 ${g.players}</span>`:''}
@@ -384,8 +445,6 @@ function renderPage(g) {
       ${g.location?`<div class="sh-location">${g.location}</div>`:''}
     </div>
 
-    ${g.style ? `<div style="background:#111;padding:0.4rem 1.3rem;display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid #333">${g.style.split(',').map(s=>s.trim()).filter(Boolean).map(s=>`<span class="sh-badge sh-badge-teal">${s}</span>`).join('')}</div>` : ''}
-
     <div class="sh-mid">
       <div class="sh-desc">
         ${g.description?`<p>${g.description}</p>`:''}
@@ -397,7 +456,7 @@ function renderPage(g) {
     </div>
 
     <div class="sh-bottom">
-      <div class="sh-info">${infoRows||'<div class="sh-info-row" style="color:#bbb;font-family:\'Barlow Condensed\',sans-serif;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase">Details appear here</div>'}</div>
+      <div class="sh-info">${infoRows||'<div class="sh-info-row" style="color:#bbb;font-size:0.85rem">Details appear here</div>'}</div>
       <div class="sh-ratings">
         <div class="sh-rating-person">
           <span class="sh-rating-name">James</span>
@@ -427,6 +486,26 @@ function renderPage(g) {
       <button class="playlist-btn alysa" onclick="addToPlaylist('alysa')">📋 Add to Alysa's List</button>
     </div>
 
+    <!-- NOTES + TAGS TABS -->
+    <div class="sh-tabs">
+      <div class="sh-tab-bar">
+        <button class="sh-tab-btn active" data-tab="notes" onclick="switchTab('notes')">📝 Notes</button>
+        <button class="sh-tab-btn" data-tab="tags" onclick="switchTab('tags')">🏷 Tags</button>
+      </div>
+      <div class="sh-tab-panel active" data-panel="notes">
+        <textarea class="notes-area" id="notes-area" placeholder="Add your notes about this game…">${g.notes||''}</textarea>
+        <button class="notes-save-btn" onclick="saveNote()">Save Note</button>
+      </div>
+      <div class="sh-tab-panel" data-panel="tags">
+        <div class="tag-chips" id="tag-chips"></div>
+        <div class="tag-input-row">
+          <input class="tag-input" id="tag-input" type="text" placeholder="Add a tag…" onkeydown="if(event.key==='Enter'){addTag();saveTags();}">
+          <button class="tag-add-btn" onclick="addTag();saveTags()">Add</button>
+        </div>
+        <a class="tag-page-link" href="tags.html">View all tags →</a>
+      </div>
+    </div>
+
     <!-- EXPANSIONS -->
     <div class="sh-exp-section">
       <div class="sh-exp-section-header" onclick="toggleSec('exp-grid-wrap', this.querySelector('.toggle-btn'))">
@@ -438,8 +517,6 @@ function renderPage(g) {
         <div class="sh-exp-grid" id="exp-grid"><div class="sh-exp-empty">Loading…</div></div>
       </div>
     </div>
-
-    <div class="sh-footer" style="min-height:4px"></div>
 
     <!-- PLAY LOG -->
     <div class="card-section">
@@ -500,6 +577,7 @@ function renderPage(g) {
   document.getElementById('p-alysa').addEventListener('change', function() {
     document.getElementById('aswrap').style.display = this.checked ? '' : 'none';
   });
+  renderTags();
 }
 
 function hoverRating(person, val) {
@@ -522,10 +600,7 @@ async function setRating(person, val) {
   numEl.style.color = val > 0 ? '#222' : '#ccc';
   updateOverall();
   try {
-    await fetch(API, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'updateRating', slug: SLUG, person, rating: val })
-    });
+    await fetch(API, { method: 'POST', body: JSON.stringify({ action: 'updateRating', slug: SLUG, person, rating: val }) });
     showToast((person==='james'?'James':'Alysa') + ' rating saved ✓');
   } catch(e) { showToast('Could not save rating'); }
 }
@@ -539,8 +614,7 @@ function updateOverall() {
 async function loadPlays() {
   try {
     const res = await fetch(API + '?action=getPlays&slug=' + encodeURIComponent(SLUG));
-    const plays = await res.json();
-    renderPlays(plays||[]);
+    renderPlays(await res.json()||[]);
   } catch(e) {
     const log = document.getElementById('play-log');
     if (log) log.innerHTML = '<div class="no-plays">Could not load plays</div>';
@@ -554,16 +628,14 @@ function renderPlays(plays) {
   log.innerHTML = plays.map(p => {
     const dateStr = p.Date ? new Date(p.Date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
     const scores = [p.JScore?'James: '+p.JScore:'', p.AScore?'Alysa: '+p.AScore:''].filter(Boolean);
-    return `<div class="play-entry">
-      <div class="pe-left">
-        <div class="pe-date">${dateStr}</div>
-        <div class="pe-players">${p.Players||''}</div>
-        ${p.Winner?`<div class="pe-winner">🏆 ${p.Winner}</div>`:''}
-        ${scores.length?`<div class="pe-scores">${scores.join(' · ')}</div>`:''}
-        ${p.Expansions?`<div class="pe-expansions">📦 ${p.Expansions}</div>`:''}
-        ${p.Notes?`<div class="pe-scores" style="font-style:italic">${p.Notes}</div>`:''}
-      </div>
-    </div>`;
+    return `<div class="play-entry"><div class="pe-left">
+      <div class="pe-date">${dateStr}</div>
+      <div class="pe-players">${p.Players||''}</div>
+      ${p.Winner?`<div class="pe-winner">🏆 ${p.Winner}</div>`:''}
+      ${scores.length?`<div class="pe-scores">${scores.join(' · ')}</div>`:''}
+      ${p.Expansions?`<div class="pe-expansions">📦 ${p.Expansions}</div>`:''}
+      ${p.Notes?`<div class="pe-scores" style="font-style:italic">${p.Notes}</div>`:''}
+    </div></div>`;
   }).join('');
 }
 
@@ -573,25 +645,20 @@ async function logPlay() {
   const alysa = document.getElementById('p-alysa').checked;
   if (!date) { showToast('Please pick a date'); return; }
   if (!james && !alysa) { showToast('Select at least one player'); return; }
-
   const expBoxes = document.querySelectorAll('#exp-checkboxes input[name="exp"]:checked');
   const expansionsPlayed = Array.from(expBoxes).map(cb => cb.value).join(', ');
-
   const btn = document.getElementById('log-btn');
   btn.textContent = 'Saving…'; btn.disabled = true;
   try {
-    await fetch(API, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'logPlay', gameSlug: SLUG, date,
-        players: [james?'James':null, alysa?'Alysa':null].filter(Boolean).join(' & '),
-        jScore: james ? document.getElementById('p-jscore').value.trim() : '',
-        aScore: alysa ? document.getElementById('p-ascore').value.trim() : '',
-        winner: document.getElementById('p-winner').value,
-        notes: document.getElementById('p-notes').value.trim(),
-        expansions: expansionsPlayed,
-      })
-    });
+    await fetch(API, { method: 'POST', body: JSON.stringify({
+      action: 'logPlay', gameSlug: SLUG, date,
+      players: [james?'James':null, alysa?'Alysa':null].filter(Boolean).join(' & '),
+      jScore: james ? document.getElementById('p-jscore').value.trim() : '',
+      aScore: alysa ? document.getElementById('p-ascore').value.trim() : '',
+      winner: document.getElementById('p-winner').value,
+      notes: document.getElementById('p-notes').value.trim(),
+      expansions: expansionsPlayed,
+    })});
     showToast('Play logged! ✓');
     document.getElementById('p-jscore').value = '';
     document.getElementById('p-ascore').value = '';
@@ -608,16 +675,11 @@ async function addToPlaylist(person) {
   const orig = btn.innerHTML;
   btn.innerHTML = 'Saving…'; btn.disabled = true;
   try {
-    const res = await fetch(API, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'addToPlaylist',
-        person: person === 'james' ? 'James' : 'Alysa',
-        gameSlug: SLUG,
-        gameTitle: GAME?.title || SLUG,
-        coverURL: GAME?.coverURL || ''
-      })
-    });
+    const res = await fetch(API, { method: 'POST', body: JSON.stringify({
+      action: 'addToPlaylist',
+      person: person === 'james' ? 'James' : 'Alysa',
+      gameSlug: SLUG, gameTitle: GAME?.title || SLUG, coverURL: GAME?.coverURL || ''
+    })});
     const result = await res.json();
     showToast(result.success === false ? `Already on ${person==='james'?'James':'Alysa'}'s list!` : `Added to ${person==='james'?'James':'Alysa'}'s playlist ✓`);
   } catch(e) { showToast('Could not add to playlist'); }
@@ -640,15 +702,10 @@ async function sendChat() {
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-allow-browser': 'true'
-      },
+      headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-allow-browser': 'true' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514', max_tokens: 1000,
-        system: `You are a board game rules expert for "${GAME?.title||'this game'}". ${GAME?.description?'Game: '+GAME.description+' ':''} ${GAME?.mechanisms?.length?'Mechanisms: '+GAME.mechanisms.join(', ')+'. ':''} Answer rules questions clearly. If unsure, recommend checking the rulebook.`,
+        system: `You are a board game rules expert for "${GAME?.title||'this game'}". ${GAME?.description?'Game: '+GAME.description+' ':''} Answer rules questions clearly. If unsure, recommend checking the rulebook.`,
         messages: [{ role: 'user', content: q }]
       })
     });
@@ -669,7 +726,6 @@ function updateMsg(id, text) {
   if(el){el.querySelector('.bubble').textContent=text;el.querySelector('.bubble').classList.remove('loading');}
   const win=document.getElementById('chat-win'); if(win) win.scrollTop=99999;
 }
-
 function showToast(msg) {
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
