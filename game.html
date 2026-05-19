@@ -30,25 +30,30 @@ header {
   color: #1A1A1A;
 }
 
-.sh-topbar { background: #111; display: flex; align-items: stretch; min-height: 200px; }
+/* topbar */
+.sh-topbar { background: #111; display: flex; align-items: stretch; min-height: 200px; position: relative; }
 .sh-cover { width: 190px; flex-shrink: 0; overflow: hidden; background: #222; display: flex; align-items: center; justify-content: center; max-height: 300px; }
 .sh-cover img { width: 100%; height: 100%; max-height: 300px; object-fit: contain; display: block; background: #222; }
 .sh-cover-ph { width: 100%; min-height: 200px; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
 .sh-title-block { flex: 1; padding: 0.45rem 0.55rem; display: flex; flex-direction: column; justify-content: space-between; }
-.sh-badges-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: space-between; }
+.sh-badges-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .sh-badge { font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; white-space: nowrap; }
 .sh-badge-gold { background: #F5A623; color: #111; }
 .sh-badge-teal { background: #1A7A7A; color: #fff; }
 .sh-badge-purple { background: #6A2FA0; color: #fff; }
-.sh-badge-red { background: var(--red); color: #fff; }
-.sh-title { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; letter-spacing: 1px; line-height: 1; color: #F4EFE5; display: block; padding: 6px 0 0; }
-.sh-meta-row { display: flex; align-items: center; justify-content: space-between; }
-.sh-meta { display: flex; gap: 14px; flex-wrap: wrap; }
+.sh-badge-red { background: var(--red); color: #fff; font-size: 0.65rem; padding: 3px 9px; }
+.sh-location { position: absolute; top: 8px; right: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; background: var(--red); color: #fff; padding: 3px 9px; border-radius: 3px; }
+.sh-title { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; letter-spacing: 1px; line-height: 1; color: #F4EFE5; display: block; padding: 4px 0 0; word-break: break-word; }
+.sh-designer-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 600; color: #888; letter-spacing: 0.5px; margin-top: 2px; }
+.sh-meta-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
+.sh-meta { display: flex; gap: 10px; flex-wrap: wrap; }
 .sh-meta-item { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 600; color: #bbb; }
-.sh-year { font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 700; letter-spacing: 3px; color: #fff; }
+.sh-year { font-family: 'Barlow Condensed', sans-serif; font-size: 0.95rem; font-weight: 700; letter-spacing: 2px; color: #fff; white-space: nowrap; }
 
+/* mid */
 .sh-mid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #D0CAB8; }
 .sh-desc { padding: 1.1rem 1.3rem; border-right: 1px solid #D0CAB8; }
+.sh-style-row { margin-bottom: 7px; display: flex; gap: 5px; flex-wrap: wrap; }
 .sh-desc p { font-size: 0.86rem; line-height: 1.65; color: #333; }
 .sh-mech-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }
 .sh-tag { font-family: 'Barlow Condensed', sans-serif; font-size: 0.63rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; background: #E0D8CC; color: #555; border: 1px solid #CBC3B5; }
@@ -56,6 +61,7 @@ header {
 .sh-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .sh-photo-ph { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; color: #aaa; }
 
+/* bottom info+ratings */
 .sh-bottom { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #D0CAB8; }
 .sh-info { padding: 1rem 1.3rem; border-right: 1px solid #D0CAB8; }
 .sh-info-row { display: flex; font-size: 0.8rem; line-height: 1.4; border-bottom: 1px dotted #D0CAB8; padding: 4px 0; gap: 5px; }
@@ -66,24 +72,26 @@ header {
 .cpip.on { background: var(--red); }
 
 .sh-ratings { padding: 1rem 1.3rem; display: flex; flex-direction: column; gap: 12px; }
-.sh-rating-person { display: flex; align-items: center; justify-content: space-between; }
-.sh-rating-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 2px; color: #555; min-width: 65px; }
-.sh-rating-stars { display: flex; gap: 3px; }
-.sstar { font-size: 20px; color: #F5A623; cursor: pointer; transition: transform 0.1s; }
+.sh-rating-person { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+.sh-rating-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 2px; color: #555; min-width: 55px; }
+.sh-rating-stars { display: flex; gap: 2px; flex-wrap: wrap; }
+.sstar { font-size: 14px; color: #F5A623; cursor: pointer; transition: transform 0.1s; }
 .sstar:hover { transform: scale(1.2); }
 .sstar.empty { color: #CCC; }
-.sh-rating-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; line-height: 1; color: #222; min-width: 40px; text-align: right; }
+.sh-rating-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; line-height: 1; color: #222; min-width: 55px; text-align: right; }
 .sh-rating-divider { border: none; border-top: 1px solid #D0CAB8; }
 .sh-overall { display: flex; align-items: center; justify-content: space-between; background: #1A1A1A; margin: -1rem -1.3rem -1rem; padding: 0.7rem 1.3rem; margin-top: 4px; }
 .sh-overall-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #888; }
 .sh-overall-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; line-height: 1; color: #F5A623; }
-.sh-overall-stars { display: flex; gap: 2px; margin-top: 2px; }
+.sh-overall-stars { display: flex; gap: 2px; flex-wrap: wrap; margin-top: 2px; }
 
+/* links */
 .sh-links { background: #ECEAE0; padding: 0.7rem 1.3rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid #D0CAB8; }
 .sh-link { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; padding: 4px 12px; border-radius: 4px; border: 1.5px solid #bbb; color: #333; display: inline-flex; align-items: center; gap: 5px; background: #fff; transition: border-color 0.15s; }
 .sh-link:hover { border-color: #555; }
 .sh-link.bgg { background: #E8622A; border-color: #E8622A; color: #fff; }
 
+/* playlist */
 .sh-playlist-bar { background: #ECEAE0; padding: 0.7rem 1.3rem; display: flex; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid #D0CAB8; }
 .playlist-btn { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; border: none; padding: 6px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s; }
 .playlist-btn.james { background: #1A1A1A; color: #F4EFE5; }
@@ -91,22 +99,27 @@ header {
 .playlist-btn.alysa { background: #6A2FA0; color: #fff; }
 .playlist-btn.alysa:hover { background: #8B3FCC; }
 
+/* footer */
 .sh-footer { background: #1A1A1A; padding: 0.6rem 1.3rem; }
 .sh-designer { font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; letter-spacing: 1px; color: #666; }
 
-.sh-exp-header { background: #1A1A1A; padding: 0.6rem 1.3rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: #F4EFE5; border-top: 2px solid #D0CAB8; }
-.sh-exp-item { display: grid; grid-template-columns: 90px 1fr; border-bottom: 1px solid #D0CAB8; }
-.sh-exp-item:last-child { border-bottom: none; }
-.sh-exp-cover { overflow: hidden; background: #DDD8CC; display: flex; align-items: center; justify-content: center; border-right: 1px solid #D0CAB8; min-height: 90px; }
-.sh-exp-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* expansions section */
+.sh-exp-section { background: #F4EFE5; border-top: 1px solid #D0CAB8; }
+.sh-exp-section-header { display: flex; align-items: center; gap: 8px; padding: 0.7rem 1.3rem; background: #1A1A1A; cursor: pointer; }
+.sh-exp-section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: #F4EFE5; flex: 1; }
+.sh-exp-grid { padding: 1rem 1.3rem; display: flex; flex-direction: column; gap: 10px; }
+.sh-exp-item { display: grid; grid-template-columns: 80px 1fr; border: 1px solid #D0CAB8; border-radius: 5px; overflow: hidden; background: #fff; }
+.sh-exp-cover { overflow: hidden; background: #DDD8CC; display: flex; align-items: center; justify-content: center; border-right: 1px solid #D0CAB8; min-height: 80px; }
+.sh-exp-cover img { width: 100%; height: 100%; object-fit: contain; display: block; background: #DDD8CC; }
 .sh-exp-cover-ph { font-size: 1.8rem; color: #bbb; }
-.sh-exp-body { padding: 0.8rem 1rem; display: flex; flex-direction: column; gap: 5px; background: #F4EFE5; }
-.sh-exp-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1px; color: #1A1A1A; line-height: 1; }
-.sh-exp-desc { font-size: 0.78rem; line-height: 1.5; color: #555; }
-.sh-exp-links { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 3px; }
+.sh-exp-body { padding: 0.7rem 0.9rem; display: flex; flex-direction: column; gap: 5px; justify-content: center; }
+.sh-exp-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1px; color: #1A1A1A; line-height: 1.1; }
+.sh-exp-links { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
 .sh-exp-link { font-family: 'Barlow Condensed', sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; padding: 2px 8px; border-radius: 3px; border: 1px solid #C8C0B0; color: #555; background: #fff; }
 .sh-exp-link.bgg { background: #E8622A; border-color: #E8622A; color: #fff; }
+.sh-exp-empty { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: #bbb; text-align: center; padding: 1rem 0; }
 
+/* card sections */
 .card-section { background: #ECEAE0; border-top: 2px solid #D0CAB8; }
 .card-section-header { display: flex; align-items: center; gap: 8px; padding: 0.7rem 1.3rem; background: #1A1A1A; }
 .card-section-icon { font-size: 14px; }
@@ -114,6 +127,7 @@ header {
 .toggle-btn { background: none; border: none; color: #888; cursor: pointer; font-size: 12px; padding: 2px 6px; }
 .toggle-btn:hover { color: var(--gold); }
 
+/* play log */
 .play-form { padding: 0.9rem 1.3rem; background: #F4EFE5; border-bottom: 1px solid #D0CAB8; display: flex; flex-direction: column; gap: 10px; }
 .play-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
 .pf { display: flex; flex-direction: column; gap: 3px; }
@@ -122,7 +136,7 @@ header {
 .pf input[type=date] { width: 130px; }
 .pf input[type=text] { width: 80px; }
 .pf select { min-width: 130px; }
-.pchk { display: flex; gap: 10px; margin-top: 4px; }
+.pchk { display: flex; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
 .pchk label { display: flex; align-items: center; gap: 4px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; color: #555; cursor: pointer; }
 .card-log-btn { background: #1A1A1A; color: #F4EFE5; font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; border: none; padding: 7px 16px; border-radius: 4px; cursor: pointer; transition: background 0.15s; }
 .card-log-btn:hover { background: #333; }
@@ -134,9 +148,11 @@ header {
 .pe-players { font-family: 'Barlow', sans-serif; font-size: 0.82rem; color: #333; }
 .pe-winner { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #8B6914; }
 .pe-scores { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; color: #888; }
+.pe-expansions { font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; color: #777; font-style: italic; }
 .no-plays { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: #bbb; text-align: center; padding: 1rem 0; }
 .plays-loading { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: #bbb; text-align: center; padding: 1rem 0; }
 
+/* chat */
 .chat-win { background: #F4EFE5; padding: 0.9rem 1.3rem; display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; border-bottom: 1px solid #D0CAB8; }
 .msg { display: flex; gap: 8px; align-items: flex-start; }
 .msg.user { flex-direction: row-reverse; }
@@ -186,10 +202,12 @@ const IMG_BASE = 'https://jamesmcm84.github.io/bg-catalog';
 const params = new URLSearchParams(window.location.search);
 const SLUG = params.get('slug') || '';
 let GAME = null;
+let EXPANSIONS = [];
 let currentRatings = { james: 0, alysa: 0 };
 
 function resolveURL(raw) {
   if (!raw) return '';
+  raw = raw.trim();
   if (raw.startsWith('/')) return IMG_BASE + raw;
   return raw;
 }
@@ -240,7 +258,6 @@ async function init() {
         coverURL:    resolveURL(g['Cover Photo'] || g.CoverURL || g.coverURL || ''),
         gameplayURL: resolveURL(g['Gameplay Photo'] || g.GameplayURL || g.gameplayURL || ''),
         accentColor: g['Accent Color'] || g.AccentColor || g.accentColor || '#1A6ACC',
-        expansions:  g.expansions || [],
       }));
       GAME = games.find(g => (g.slug||'').toLowerCase() === SLUG.toLowerCase());
     }
@@ -249,12 +266,62 @@ async function init() {
       document.getElementById('page').innerHTML = '<div style="text-align:center;padding:4rem;color:#666"><h2 style="font-family:\'Bebas Neue\',sans-serif;font-size:2rem;letter-spacing:3px">Game Not Found</h2><p style="margin-top:8px"><a href="index.html" style="color:#F5A623">← Back to Collection</a></p></div>';
       return;
     }
+
+    // Fetch expansions in parallel with page render
     document.title = GAME.title + ' — BoardVault';
     renderPage(GAME);
     loadPlays();
+    loadExpansions();
   } catch(e) {
     document.getElementById('page').innerHTML = '<div style="text-align:center;padding:4rem;color:#666">Could not load game data.</div>';
   }
+}
+
+async function loadExpansions() {
+  try {
+    const res = await fetch(API + '?action=getExpansions&slug=' + encodeURIComponent(SLUG));
+    EXPANSIONS = await res.json();
+    renderExpansions();
+    // Also update play log expansion checkboxes
+    renderExpansionCheckboxes();
+  } catch(e) {
+    EXPANSIONS = [];
+  }
+}
+
+function renderExpansions() {
+  const el = document.getElementById('exp-grid');
+  if (!el) return;
+  if (!EXPANSIONS.length) {
+    el.innerHTML = '<div class="sh-exp-empty">No expansions on record</div>';
+    return;
+  }
+  el.innerHTML = EXPANSIONS.map(ex => `
+    <div class="sh-exp-item">
+      <div class="sh-exp-cover">
+        ${ex.cover ? `<img src="${resolveURL(ex.cover)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'sh-exp-cover-ph\'>📦</div>'">` : '<div class="sh-exp-cover-ph">📦</div>'}
+      </div>
+      <div class="sh-exp-body">
+        <div class="sh-exp-name">${ex.name||''}</div>
+        <div class="sh-exp-links">
+          ${ex.bgg ? `<a class="sh-exp-link bgg" href="${ex.bgg}" target="_blank">🎯 BGG</a>` : ''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderExpansionCheckboxes() {
+  const el = document.getElementById('exp-checkboxes');
+  if (!el) return;
+  if (!EXPANSIONS.length) { el.style.display = 'none'; return; }
+  el.style.display = '';
+  el.innerHTML = `
+    <div class="pf">
+      <label>Expansions Played</label>
+      <div class="pchk" style="flex-direction:column;gap:5px;margin-top:6px">
+        ${EXPANSIONS.map((ex, i) => `<label><input type="checkbox" name="exp" value="${ex.name}"> ${ex.name}</label>`).join('')}
+      </div>
+    </div>`;
 }
 
 function stars(r, sz, interactive, person) {
@@ -281,7 +348,6 @@ function renderPage(g) {
   const infoRows = [
     g.theme ? `<div class="sh-info-row"><span class="sh-info-key">Theme</span><span class="sh-info-val">${g.theme}</span></div>` : '',
     `<div class="sh-info-row"><span class="sh-info-key">Complexity</span><span class="sh-info-val">${pipsHtml} <span style="font-size:0.78rem;color:#777">${complexity}/5</span></span></div>`,
-    g.designer ? `<div class="sh-info-row"><span class="sh-info-key">Designer</span><span class="sh-info-val">${g.designer}</span></div>` : '',
     g.publisher ? `<div class="sh-info-row"><span class="sh-info-key">Publisher</span><span class="sh-info-val">${g.publisher}</span></div>` : '',
   ].filter(Boolean).join('');
 
@@ -291,24 +357,6 @@ function renderPage(g) {
     g.bggURL ? `<a class="sh-link bgg" href="${g.bggURL}" target="_blank">🎯 BGG</a>` : '',
   ].filter(Boolean).join('');
 
-  const expansionsHtml = (g.expansions||[]).length ? `
-    <div class="sh-exp-header">📦 Expansions</div>
-    ${g.expansions.map(ex=>`
-      <div class="sh-exp-item">
-        <div class="sh-exp-cover">
-          ${ex.coverURL?`<img src="${resolveURL(ex.coverURL)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'sh-exp-cover-ph\'>📦</div>'">`:'<div class="sh-exp-cover-ph">📦</div>'}
-        </div>
-        <div class="sh-exp-body">
-          <div class="sh-exp-name">${ex.name||''}</div>
-          ${ex.description?`<div class="sh-exp-desc">${ex.description}</div>`:''}
-          <div class="sh-exp-links">
-            ${ex.videoURL?`<a class="sh-exp-link" href="${ex.videoURL}" target="_blank">▶ How to Play</a>`:''}
-            ${ex.rulebookURL?`<a class="sh-exp-link" href="${ex.rulebookURL}" target="_blank">📄 Rulebook</a>`:''}
-            ${ex.bggURL?`<a class="sh-exp-link bgg" href="${ex.bggURL}" target="_blank">🎯 BGG</a>`:''}
-          </div>
-        </div>
-      </div>`).join('')}` : '';
-
   document.getElementById('page').innerHTML = `
   <div class="sheet">
     <div class="sh-topbar">
@@ -317,14 +365,11 @@ function renderPage(g) {
       </div>
       <div class="sh-title-block">
         <div class="sh-badges-row">
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            ${g.gameType?`<span class="sh-badge sh-badge-purple">${g.gameType}</span>`:''}
-            ${g.style?`<span class="sh-badge sh-badge-teal">${g.style}</span>`:''}
-            ${g.category?`<span class="sh-badge sh-badge-gold">${g.category}</span>`:''}
-          </div>
-          ${g.location?`<span class="sh-badge sh-badge-red">${g.location}</span>`:''}
+          ${g.gameType?`<span class="sh-badge sh-badge-purple">${g.gameType}</span>`:''}
+          ${g.category?`<span class="sh-badge sh-badge-gold">${g.category}</span>`:''}
         </div>
         <div class="sh-title" style="font-size:${(g.title||'').length>22?'2rem':(g.title||'').length>14?'2.6rem':'3.2rem'}">${g.title||''}</div>
+        ${g.designer?`<div class="sh-designer-sub">${g.designer}</div>`:''}
         <div class="sh-meta-row">
           <div class="sh-meta">
             ${g.players?`<span class="sh-meta-item">👥 ${g.players}</span>`:''}
@@ -334,10 +379,12 @@ function renderPage(g) {
           ${g.year?`<div class="sh-year">${g.year}</div>`:''}
         </div>
       </div>
+      ${g.location?`<div class="sh-location">${g.location}</div>`:''}
     </div>
 
     <div class="sh-mid">
       <div class="sh-desc">
+        ${g.style?`<div class="sh-style-row"><span class="sh-badge sh-badge-teal">${g.style}</span></div>`:''}
         ${g.description?`<p>${g.description}</p>`:''}
         ${mechs.length?`<div class="sh-mech-tags">${mechs.map(m=>`<span class="sh-tag">${m}</span>`).join('')}</div>`:''}
       </div>
@@ -377,21 +424,30 @@ function renderPage(g) {
       <button class="playlist-btn alysa" onclick="addToPlaylist('alysa')">📋 Add to Alysa's List</button>
     </div>
 
-    <div class="sh-footer">
-      ${g.designer?`<div class="sh-designer">Designer: ${g.designer}</div>`:''}
-      ${g.publisher?`<div class="sh-designer" style="color:#555">Publisher: ${g.publisher}</div>`:''}
+    <!-- EXPANSIONS -->
+    <div class="sh-exp-section">
+      <div class="sh-exp-section-header" onclick="toggleSec('exp-grid-wrap', this.querySelector('.toggle-btn'))">
+        <span style="font-size:14px">📦</span>
+        <span class="sh-exp-section-title">Expansions</span>
+        <button class="toggle-btn" style="background:none;border:none;color:#888;cursor:pointer;font-size:12px;padding:2px 6px">▶</button>
+      </div>
+      <div id="exp-grid-wrap" style="display:none">
+        <div class="sh-exp-grid" id="exp-grid"><div class="sh-exp-empty">Loading…</div></div>
+      </div>
     </div>
 
-    ${expansionsHtml?`<div>${expansionsHtml}</div>`:''}
+    <div class="sh-footer">
+      ${g.publisher?`<div class="sh-designer" style="color:#555">Publisher: ${g.publisher}</div>`:''}
+    </div>
 
     <!-- PLAY LOG -->
     <div class="card-section">
       <div class="card-section-header">
         <span class="card-section-icon">🎲</span>
         <span class="card-section-title">Play Log</span>
-        <button class="toggle-btn" onclick="toggleSec('plays-body',this)">▼</button>
+        <button class="toggle-btn" onclick="toggleSec('plays-body',this)">▶</button>
       </div>
-      <div id="plays-body">
+      <div id="plays-body" style="display:none">
         <div class="play-form">
           <div class="play-row">
             <div class="pf"><label>Date</label><input type="date" id="p-date"></div>
@@ -411,6 +467,7 @@ function renderPage(g) {
               </select>
             </div>
           </div>
+          <div id="exp-checkboxes" style="display:none"></div>
           <div class="pf" style="width:100%"><label>Notes</label><input type="text" id="p-notes" placeholder="Optional…" style="width:100%"></div>
           <button class="card-log-btn" id="log-btn" onclick="logPlay()">+ Log Play</button>
         </div>
@@ -423,9 +480,9 @@ function renderPage(g) {
       <div class="card-section-header">
         <span class="card-section-icon">💬</span>
         <span class="card-section-title">Ask Claude — Rules Q&amp;A</span>
-        <button class="toggle-btn" onclick="toggleSec('ask-body',this)">▼</button>
+        <button class="toggle-btn" onclick="toggleSec('ask-body',this)">▶</button>
       </div>
-      <div id="ask-body">
+      <div id="ask-body" style="display:none">
         <div class="chat-win" id="chat-win">
           <div class="msg ai"><div class="av">BV</div><div class="bubble">Hi! Ask me anything about <strong>${g.title}</strong> — rules, setup, edge cases, strategy tips.</div></div>
         </div>
@@ -502,6 +559,7 @@ function renderPlays(plays) {
         <div class="pe-players">${p.Players||''}</div>
         ${p.Winner?`<div class="pe-winner">🏆 ${p.Winner}</div>`:''}
         ${scores.length?`<div class="pe-scores">${scores.join(' · ')}</div>`:''}
+        ${p.Expansions?`<div class="pe-expansions">📦 ${p.Expansions}</div>`:''}
         ${p.Notes?`<div class="pe-scores" style="font-style:italic">${p.Notes}</div>`:''}
       </div>
     </div>`;
@@ -514,6 +572,10 @@ async function logPlay() {
   const alysa = document.getElementById('p-alysa').checked;
   if (!date) { showToast('Please pick a date'); return; }
   if (!james && !alysa) { showToast('Select at least one player'); return; }
+
+  const expBoxes = document.querySelectorAll('#exp-checkboxes input[name="exp"]:checked');
+  const expansionsPlayed = Array.from(expBoxes).map(cb => cb.value).join(', ');
+
   const btn = document.getElementById('log-btn');
   btn.textContent = 'Saving…'; btn.disabled = true;
   try {
@@ -526,6 +588,7 @@ async function logPlay() {
         aScore: alysa ? document.getElementById('p-ascore').value.trim() : '',
         winner: document.getElementById('p-winner').value,
         notes: document.getElementById('p-notes').value.trim(),
+        expansions: expansionsPlayed,
       })
     });
     showToast('Play logged! ✓');
@@ -533,6 +596,7 @@ async function logPlay() {
     document.getElementById('p-ascore').value = '';
     document.getElementById('p-winner').value = '';
     document.getElementById('p-notes').value = '';
+    document.querySelectorAll('#exp-checkboxes input[name="exp"]').forEach(cb => cb.checked = false);
     loadPlays();
   } catch(e) { showToast('Error saving play'); }
   btn.textContent = '+ Log Play'; btn.disabled = false;
@@ -563,7 +627,7 @@ function toggleSec(id, btn) {
   const el = document.getElementById(id); if (!el) return;
   const hidden = el.style.display === 'none';
   el.style.display = hidden ? '' : 'none';
-  btn.textContent = hidden ? '▼' : '▶';
+  if (btn) btn.textContent = hidden ? '▼' : '▶';
 }
 
 async function sendChat() {
